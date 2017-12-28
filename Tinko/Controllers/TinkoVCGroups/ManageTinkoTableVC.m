@@ -7,22 +7,103 @@
 //
 
 #import "ManageTinkoTableVC.h"
+#import "TinkoCell.h"
+#import "Meet.h"
+#import "EKBHeap.h"
+@import Firebase;
 
 @interface ManageTinkoTableVC ()
-
+@property NSMutableArray<Meet *> *meetsArray;
+@property NSMutableArray *meetsIdArray;
+@property NSMutableDictionary *meetsIdDictionary;
+@property FIRFirestore *db;
+@property NSString *facebookId;
 @end
 
 @implementation ManageTinkoTableVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
+    _meetsArray = [[NSMutableArray alloc] init];
+    _meetsIdArray = [[NSMutableArray alloc] init];
+    _meetsIdDictionary = [[NSMutableDictionary alloc] init];
+    _db = FIRFirestore.firestore;
+    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    [self loadExistedMeetsFromFirestore];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
+-(void)loadExistedMeetsFromFirestore{
+    NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
+    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
+    FIRQuery *query = [meetsRef queryOrderedByField:queryString];
+    [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
+        if (error != nil) {
+            NSLog(@"Error getting documents: %@", error);
+        } else {
+            NSLog(@"Count of new refresh documents: %lu", (unsigned long)snapshot.documents.count);
+            for (FIRDocumentSnapshot *document in snapshot.documents) {
+                //NSLog(@"%@ => %@", document.documentID, document.data);
+                Meet *meet = [[Meet alloc] initWithDictionary:document.data];
+                [_meetsArray addObject:meet];
+                [_meetsIdArray addObject:document.documentID];
+                [_meetsIdDictionary setObject:@YES forKey:document.documentID];
+            }
+            [self.tableView reloadData];
+            //NSLog(@"%@", _meetsIdDictionary);
+            [self addNewAddMeetsObserver];
+        }
+    }];
+    
+}
+
+- (void) addNewAddMeetsObserver{
+    NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
+    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
+    FIRQuery *query = [meetsRef queryOrderedByField:queryString];
+    [query addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
+        if (snapshot == nil) {
+            NSLog(@"Error fetching documents: %@", error);
+            return;
+        }
+        for (FIRDocumentChange *diff in snapshot.documentChanges) {
+            if (diff.type == FIRDocumentChangeTypeAdded) {
+                
+                NSString *documentId = diff.document.documentID;
+                if([_meetsIdDictionary objectForKey:documentId] == nil){
+                    Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
+                    NSLog(@"New meet: %@", diff.document.data);
+                    [_meetsArray addObject:meet];
+                    [_meetsIdArray addObject:documentId];
+                    [_meetsIdDictionary setObject:@YES forKey:documentId];
+                    
+                    //HEAP SORT
+                    NSDictionary *doc = heapSort(_meetsArray, _meetsIdArray);
+                    //NSLog(@"%@", doc);
+                    _meetsArray = doc[@"meetsArray"];
+                    _meetsIdArray = doc[@"meetsIdArray"];
+                    [self.tableView reloadData];
+                }
+                
+            }
+            if (diff.type == FIRDocumentChangeTypeModified) {
+                //NSLog(@"Modified city: %@", diff.document.data);
+            }
+            if (diff.type == FIRDocumentChangeTypeRemoved) {
+                NSLog(@"Removed meet: %@", diff.document.data);
+            }
+        }
+        
+        //
+    }];
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -32,22 +113,34 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+    return _meetsArray.count;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
+    TinkoCell *cell = nil;
+    if (cell == nil)
+    {
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
+        cell = (TinkoCell *)[nib objectAtIndex:0];
+    }
+    if(_meetsArray.count > 0 && _meetsArray.count > indexPath.row){
+        [cell setCellData:_meetsArray[indexPath.row]];
+    }
+
+
+
     return cell;
 }
-*/
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return 124.0f;
+}
 
 #pragma mark - XLPagerTabStripViewControllerDelegate
 

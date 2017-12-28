@@ -26,7 +26,7 @@
             </objects>
             <point key="canvasLocation" x="-375" y="215"/>
         </scene>
-        <!--MeVC-->
+        <!--Me-->
         <scene sceneID="vf9-Dy-q6Y">
             <objects>
                 <viewController storyboardIdentifier="MeVCID" id="Q0W-um-aFN" customClass="MeVC" sceneMemberID="viewController">
@@ -79,7 +79,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="i8N-W4-StX"/>
                     </view>
-                    <navigationItem key="navigationItem" id="LMQ-e0-FEV"/>
+                    <navigationItem key="navigationItem" title="Me" id="LMQ-e0-FEV"/>
                     <connections>
                         <outlet property="table" destination="dsF-vf-aMY" id="4uC-SP-rZP"/>
                     </connections>
@@ -360,6 +360,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Post" id="0ss-OW-2em">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="postAction:" destination="tTf-ME-u4h" id="ovI-sq-sUj"/>
                             </connections>
@@ -451,6 +452,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6i5-sL-1hz">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.30168914794921875" green="0.71118456125259399" blue="0.97815650701522827" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -470,6 +472,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="eh7-HO-9RZ">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.21894469857215881" green="0.52895408868789673" blue="0.7290768027305603" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="QpQ-bu-VUb">

@@ -23,6 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor whiteColor],
+                                                                NSFontAttributeName:[UIFont systemFontOfSize:19 weight:UIFontWeightSemibold]}];
     
     _table.delegate = self;
     _table.dataSource = self;

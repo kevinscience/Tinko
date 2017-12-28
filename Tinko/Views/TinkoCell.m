@@ -8,6 +8,7 @@
 
 #import "TinkoCell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+
 @import Firebase;
 
 @implementation TinkoCell
@@ -17,16 +18,16 @@
     // Initialization code
 }
 
-- (void)setCellData:(NSDictionary *)dic
+- (void)setCellData:(Meet *)meet
 {
-    NSString *facebookId = dic[@"creator"];
+    NSString *facebookId = meet.creatorFacebookId;
     
-    _title.text = dic[@"title"];
-    NSDate *startTime = dic[@"startTime"];
+    _title.text = meet.title;
+    NSDate *startTime = meet.startTime;
     NSDateFormatter *formatter=[[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"MMM dd, YYYY    hh:mm a"];
     self.time.text=[NSString stringWithFormat:@"%@",[formatter stringFromDate: startTime]];
-    _placeName.text = dic[@"place"][@"name"];
+    _placeName.text = meet.placeName;
     
     
     FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId];

@@ -23,8 +23,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.isProgressiveIndicator = YES;
-    // Do any additional setup after loading the view.
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
+//    self.extendedLayoutIncludesOpaqueBars = NO;
+//    self.automaticallyAdjustsScrollViewInsets = NO;
     
+    [self moveToViewControllerAtIndex:1];
     [self.buttonBarView setBackgroundColor:[UIColor clearColor]];
     [self.buttonBarView.selectedBar setBackgroundColor:[UIColor orangeColor]];
     [self.buttonBarView removeFromSuperview];
@@ -38,14 +41,33 @@
             if (animated) {
                 [UIView animateWithDuration:0.1
                                  animations:^(){
-                                     newCell.transform = CGAffineTransformMakeScale(1.0, 1.0);
-                                     oldCell.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                                     if(self.currentIndex == 1){
+                                         newCell.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                                     } else {
+                                         newCell.transform = CGAffineTransformMakeScale(1.05, 1.05);
+                                     }
+                                     
+                                     if(self.currentIndex == 0 || self.currentIndex == 2){
+                                         oldCell.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                                     } else{
+                                         oldCell.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                                     }
+                                     
                                  }
                                  completion:nil];
             }
             else{
-                newCell.transform = CGAffineTransformMakeScale(1.0, 1.0);
-                oldCell.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                if(self.currentIndex == 1){
+                    newCell.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                } else {
+                    newCell.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                }
+                
+                if(self.currentIndex == 0 || self.currentIndex == 2){
+                    oldCell.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                } else{
+                    oldCell.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                }
             }
         }
     };

@@ -33,7 +33,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self showCurrentDate];
-    [self.dateTimePicker setMinimumDate:[NSDate date]];    
+    [self.dateTimePicker setMinimumDate:[NSDate date]];
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:56/255.0 green:135/255.0 blue:186/255.0 alpha:1.0];
+    [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor whiteColor],
+                                                                       NSFontAttributeName:[UIFont systemFontOfSize:19 weight:UIFontWeightSemibold]}];
 }
 
 - (IBAction)postAction:(id)sender {
@@ -51,15 +54,28 @@
     NSString *description = _descriptionTextField.text;
     NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
     FIRGeoPoint *coordinate = [[FIRGeoPoint alloc] initWithLatitude:_place.coordinate.latitude longitude:_place.coordinate.longitude];
-    NSMutableDictionary *selectedFriendsDictionary = [[NSMutableDictionary alloc] init];
-    for (NSString *friendFacebookId in _selectedFriendsArray){
-        [selectedFriendsDictionary setObject:_pickerDate forKey:friendFacebookId];
+    if(_pickerDate == nil){
+        _pickerDate = [NSDate date];
     }
-    NSDictionary *participatedUsersList = @{facebookId:_pickerDate};
+    double now = [[NSDate date] timeIntervalSince1970];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"dd"];
+//    NSString *stringFromDateNow = [formatter stringFromDate:n];
+//    NSInteger negativeIntegerDateNow = -[stringFromDateNow integerValue];
+    NSMutableDictionary *selectedFriendsDictionary = [[NSMutableDictionary alloc] init];
+    NSDictionary *time = @{
+                           @"startTime" : _pickerDate,
+                           @"postTime" : [NSNumber numberWithDouble:-now]
+                           };
+    for (NSString *friendFacebookId in _selectedFriendsArray){
+        [selectedFriendsDictionary setObject:time forKey:friendFacebookId];
+    }
+    NSDictionary *participatedUsersList = @{facebookId:time};
     NSDictionary *meet = @{
                            @"title" : title,
                            @"creator" : facebookId,
                            @"startTime" : _pickerDate,
+                           @"postTime" : [NSDate date],
                            @"duration" : duration,
                            @"place" : @{
                                        @"name" : _place.name,

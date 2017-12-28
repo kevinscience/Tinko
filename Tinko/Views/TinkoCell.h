@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Meet.h"
 
 @interface TinkoCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *profileImage;
@@ -14,5 +15,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *time;
 @property (weak, nonatomic) IBOutlet UILabel *placeName;
-- (void)setCellData:(NSDictionary *)dic;
+- (void)setCellData:(Meet *)meet;
 @end

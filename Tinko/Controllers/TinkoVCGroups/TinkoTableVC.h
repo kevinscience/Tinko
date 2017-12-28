@@ -10,5 +10,4 @@
 #import "XLPagerTabStripViewController.h"
 
 @interface TinkoTableVC : UITableViewController <XLPagerTabStripChildItem>
-
 @end

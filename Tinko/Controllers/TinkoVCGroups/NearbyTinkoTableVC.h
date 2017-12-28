@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "XLPagerTabStripViewController.h"
+#import <CoreLocation/CoreLocation.h>
 
-@interface NearbyTinkoTableVC : UITableViewController <XLPagerTabStripChildItem>
+@interface NearbyTinkoTableVC : UITableViewController <XLPagerTabStripChildItem, CLLocationManagerDelegate>
 
 @end

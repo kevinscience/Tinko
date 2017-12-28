@@ -40,13 +40,13 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PB8-EE-ihU">
-                        <rect key="frame" x="16" y="66" width="296" height="21"/>
+                        <rect key="frame" x="74" y="66" width="238" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dVH-3x-1qX">
-                        <rect key="frame" x="16" y="95" width="296" height="21"/>
+                        <rect key="frame" x="74" y="95" width="238" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -56,14 +56,14 @@
                     <constraint firstItem="dVH-3x-1qX" firstAttribute="top" secondItem="PB8-EE-ihU" secondAttribute="bottom" constant="8" id="4Xs-Cf-iU1"/>
                     <constraint firstAttribute="trailing" secondItem="dVH-3x-1qX" secondAttribute="trailing" constant="8" id="Nh1-mr-ced"/>
                     <constraint firstItem="Scx-bb-AMb" firstAttribute="top" secondItem="6Du-FZ-nbf" secondAttribute="top" id="Thf-X4-gDy"/>
+                    <constraint firstItem="PB8-EE-ihU" firstAttribute="leading" secondItem="dVH-3x-1qX" secondAttribute="leading" id="UhC-hK-Jsg"/>
                     <constraint firstAttribute="trailing" secondItem="Scx-bb-AMb" secondAttribute="trailing" constant="8" id="ZH6-hW-ReR"/>
                     <constraint firstItem="6Du-FZ-nbf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Zue-yO-shL"/>
                     <constraint firstItem="PB8-EE-ihU" firstAttribute="top" secondItem="6Du-FZ-nbf" secondAttribute="bottom" constant="8" id="csx-mf-wl5"/>
+                    <constraint firstItem="Diz-Mq-1cT" firstAttribute="leading" secondItem="PB8-EE-ihU" secondAttribute="leading" id="elR-kg-glM"/>
                     <constraint firstItem="6Du-FZ-nbf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="la5-G1-C13"/>
                     <constraint firstItem="Diz-Mq-1cT" firstAttribute="leading" secondItem="6Du-FZ-nbf" secondAttribute="trailing" constant="8" id="mQ1-8J-dTo"/>
                     <constraint firstItem="6Du-FZ-nbf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="pWE-uC-hna"/>
-                    <constraint firstItem="PB8-EE-ihU" firstAttribute="leading" secondItem="6Du-FZ-nbf" secondAttribute="leading" id="q3F-vr-zxO"/>
-                    <constraint firstItem="dVH-3x-1qX" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="qhV-1H-iHH"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Diz-Mq-1cT" secondAttribute="trailing" constant="8" id="vco-we-Clj"/>
                     <constraint firstItem="Diz-Mq-1cT" firstAttribute="top" secondItem="Scx-bb-AMb" secondAttribute="bottom" constant="5" id="wL6-Ym-Rfu"/>
                     <constraint firstAttribute="trailing" secondItem="PB8-EE-ihU" secondAttribute="trailing" constant="8" id="xXb-7c-HeI"/>

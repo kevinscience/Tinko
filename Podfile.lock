@@ -11,6 +11,9 @@ PODS:
   - Firebase/Core (4.8.0):
     - FirebaseAnalytics (= 4.0.5)
     - FirebaseCore (= 4.0.13)
+  - Firebase/Database (4.8.0):
+    - Firebase/Core
+    - FirebaseDatabase (= 4.1.3)
   - Firebase/Firestore (4.8.0):
     - Firebase/Core
     - FirebaseFirestore (= 0.9.4)
@@ -25,6 +28,10 @@ PODS:
     - GTMSessionFetcher/Core (~> 1.1)
   - FirebaseCore (4.0.13):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+  - FirebaseDatabase (4.1.3):
+    - FirebaseAnalytics (~> 4.0)
+    - FirebaseCore (~> 4.0)
+    - leveldb-library (~> 1.18)
   - FirebaseFirestore (0.9.4):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
@@ -33,6 +40,8 @@ PODS:
     - Protobuf (~> 3.1)
   - FirebaseInstanceID (2.0.8):
     - FirebaseCore (~> 4.0)
+  - GeoFire (2.0.0):
+    - Firebase/Database (~> 4.0)
   - GoogleMaps/Base (2.5.0)
   - GooglePlaces (2.5.0):
     - GoogleMaps/Base (= 2.5.0)
@@ -81,10 +90,21 @@ PODS:
 DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
+  - Firebase/Database
   - Firebase/Firestore
+  - GeoFire (from `https://github.com/firebase/geofire-objc`)
   - GooglePlaces
   - SDWebImage (= 4.0)
   - XLPagerTabStrip (~> 3.0)
+
+EXTERNAL SOURCES:
+  GeoFire:
+    :git: https://github.com/firebase/geofire-objc
+
+CHECKOUT OPTIONS:
+  GeoFire:
+    :commit: 8c4a04b46dbb0959b91a9afd946798b5aeb8e8bf
+    :git: https://github.com/firebase/geofire-objc
 
 SPEC CHECKSUMS:
   BoringSSL: 84318770d120503ab1a6aaf1df777c5ca053697e
@@ -92,8 +112,10 @@ SPEC CHECKSUMS:
   FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
   FirebaseAuth: dc0dd403beca5b2b016aac89c2d0b8dad1c81926
   FirebaseCore: 3c02ec652db3d03fdc8bc6d9154af3e20d64b6f5
+  FirebaseDatabase: 7088bfc4af2cc00231bb36e1404fc2d7509eb4dc
   FirebaseFirestore: 0fb0301657759bdd7a4bc37a436e543a86b189ad
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
+  GeoFire: 12dde45333e02aace5a8d921749095b9135cabc1
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
@@ -108,6 +130,6 @@ SPEC CHECKSUMS:
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   XLPagerTabStrip: 0f9f94246c84e7cb60a06ca435da68ac75c8b56e
 
-PODFILE CHECKSUM: adadc0893029d6938384e62873132c9eca28b2e5
+PODFILE CHECKSUM: 279e5f6b613b8e1b131137b6e14c4a947b3f69c9
 
 COCOAPODS: 1.2.1
