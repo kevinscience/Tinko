@@ -21,7 +21,7 @@
 
 - (void)setCellData
 {
-    NSNumber *facebookId = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebookId"];
+    NSString *facebookId = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebookId"];
     FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId];
     [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if (snapshot.exists) {

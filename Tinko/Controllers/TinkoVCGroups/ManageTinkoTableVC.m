@@ -10,6 +10,8 @@
 #import "TinkoCell.h"
 #import "Meet.h"
 #import "EKBHeap.h"
+#import "TinkoDisplayRootVC.h"
+#import "SharedMeet.h"
 @import Firebase;
 
 @interface ManageTinkoTableVC ()
@@ -136,6 +138,20 @@
 
     return cell;
 }
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
+    //TinkoDisccusionVC *secondView = [TinkoDisccusionVC new];
+    secondView.hidesBottomBarWhenPushed = YES;
+    SharedMeet *sharedMeet = [SharedMeet sharedMeet];
+    Meet *meet = _meetsArray[indexPath.row];
+    [sharedMeet setMeet:meet];
+    [sharedMeet setMeetId:_meetsIdArray[indexPath.row]];
+    NSLog(@"TinkoTable: %@", meet.title);
+    [self.navigationController pushViewController: secondView animated:YES];
+}
+
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     

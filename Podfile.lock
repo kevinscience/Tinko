@@ -76,6 +76,7 @@ PODS:
     - gRPC-RxLibrary (= 1.8.0)
   - GTMSessionFetcher/Core (1.1.12)
   - leveldb-library (1.20)
+  - LoremIpsum (1.0.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
@@ -85,6 +86,7 @@ PODS:
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
+  - SlackTextViewController (1.9.6)
   - XLPagerTabStrip (3.0.0)
 
 DEPENDENCIES:
@@ -94,7 +96,9 @@ DEPENDENCIES:
   - Firebase/Firestore
   - GeoFire (from `https://github.com/firebase/geofire-objc`)
   - GooglePlaces
+  - LoremIpsum (~> 1.0)
   - SDWebImage (= 4.0)
+  - SlackTextViewController
   - XLPagerTabStrip (~> 3.0)
 
 EXTERNAL SOURCES:
@@ -125,11 +129,13 @@ SPEC CHECKSUMS:
   gRPC-RxLibrary: 7c57a1b2ff2f9cafb0face35bbfa0a326281295d
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  LoremIpsum: 9029c55d36501b2ee0b05cc9ecda11d3a0479160
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  SlackTextViewController: b854e62c1c156336bc4fd409c6ca79b5773e8f9d
   XLPagerTabStrip: 0f9f94246c84e7cb60a06ca435da68ac75c8b56e
 
-PODFILE CHECKSUM: 279e5f6b613b8e1b131137b6e14c4a947b3f69c9
+PODFILE CHECKSUM: 679e971e13ee186f78142487535e0f3e9c88551d
 
 COCOAPODS: 1.2.1

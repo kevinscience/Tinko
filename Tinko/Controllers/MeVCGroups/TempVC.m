@@ -18,14 +18,36 @@
 
 @implementation TempVC
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
         FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
         [loginButton setDelegate:self];
         //loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
         loginButton.center = self.view.center;
         [self.view addSubview:loginButton];
+    
+    UILabel * label = [[UILabel alloc] init];
+    [label setTranslatesAutoresizingMaskIntoConstraints:NO];
+    label.text = @"XLPagerTabStrip";
+    [self.view addSubview:label];
+    
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:-50.0]];
+    
+    
 }
 
 - (void) loginButtonDidLogOut:(FBSDKLoginButton *)loginButton{
@@ -44,6 +66,18 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma mark - XLPagerTabStripViewControllerDelegate
+
+-(NSString *)titleForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController
+{
+    return @"Discussion";
+}
+
+-(UIColor *)colorForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController
+{
+    return [UIColor whiteColor];
+}
+
 
 /*
 #pragma mark - Navigation

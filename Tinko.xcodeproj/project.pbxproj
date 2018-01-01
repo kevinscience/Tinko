@@ -42,6 +42,16 @@
 		41AAD8CE1FF1C5750020532B /* Meet.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8CD1FF1C5750020532B /* Meet.m */; };
 		41AAD8D11FF1CFA50020532B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41AAD8D01FF1CFA50020532B /* CoreLocation.framework */; };
 		41AAD8D41FF4BDE80020532B /* EKBHeap.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8D31FF4BDE80020532B /* EKBHeap.m */; };
+		41AAD8D91FF69BCB0020532B /* TinkoDisplayRootVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8D81FF69BCB0020532B /* TinkoDisplayRootVC.m */; };
+		41AAD8DD1FF69DE90020532B /* TinkoDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8DB1FF69DE90020532B /* TinkoDetailVC.m */; };
+		41AAD8E21FF7274A0020532B /* TinkoDisccusionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8E01FF7274A0020532B /* TinkoDisccusionVC.m */; };
+		41AAD8E61FF7E7E20020532B /* SharedMeet.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8E51FF7E7E20020532B /* SharedMeet.m */; };
+		41AAD8EC1FF889F20020532B /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8EA1FF889F20020532B /* MessageTextView.m */; };
+		41AAD8ED1FF889F20020532B /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8EB1FF889F20020532B /* MessageTableViewCell.m */; };
+		41AAD8F01FF88A7D0020532B /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8EF1FF88A7D0020532B /* Message.m */; };
+		41AAD8F31FF891F50020532B /* TypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8F21FF891F40020532B /* TypingIndicatorView.m */; };
+		41AAD90A1FF9774B0020532B /* ThisUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD9091FF9774B0020532B /* ThisUser.m */; };
+		41AAD90D1FF978410020532B /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD90C1FF978410020532B /* User.m */; };
 		84F491EDD68AC802B16356FD /* libPods-TinkoUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C821D3FA0E52C89CBCE43D0E /* libPods-TinkoUITests.a */; };
 		AA4885207454EDCCDB166607 /* libPods-TinkoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3020BAC9277E3C84B4B3708A /* libPods-TinkoTests.a */; };
 /* End PBXBuildFile section */
@@ -124,6 +134,26 @@
 		41AAD8D01FF1CFA50020532B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		41AAD8D31FF4BDE80020532B /* EKBHeap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EKBHeap.m; sourceTree = "<group>"; };
 		41AAD8D51FF4BE420020532B /* EKBHeap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EKBHeap.h; sourceTree = "<group>"; };
+		41AAD8D71FF69BCB0020532B /* TinkoDisplayRootVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinkoDisplayRootVC.h; sourceTree = "<group>"; };
+		41AAD8D81FF69BCB0020532B /* TinkoDisplayRootVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoDisplayRootVC.m; sourceTree = "<group>"; };
+		41AAD8DA1FF69DE90020532B /* TinkoDetailVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinkoDetailVC.h; sourceTree = "<group>"; };
+		41AAD8DB1FF69DE90020532B /* TinkoDetailVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoDetailVC.m; sourceTree = "<group>"; };
+		41AAD8DF1FF7274A0020532B /* TinkoDisccusionVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinkoDisccusionVC.h; sourceTree = "<group>"; };
+		41AAD8E01FF7274A0020532B /* TinkoDisccusionVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoDisccusionVC.m; sourceTree = "<group>"; };
+		41AAD8E41FF7E7E20020532B /* SharedMeet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedMeet.h; sourceTree = "<group>"; };
+		41AAD8E51FF7E7E20020532B /* SharedMeet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedMeet.m; sourceTree = "<group>"; };
+		41AAD8E81FF889F20020532B /* MessageTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTextView.h; sourceTree = "<group>"; };
+		41AAD8E91FF889F20020532B /* MessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTableViewCell.h; sourceTree = "<group>"; };
+		41AAD8EA1FF889F20020532B /* MessageTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTextView.m; sourceTree = "<group>"; };
+		41AAD8EB1FF889F20020532B /* MessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTableViewCell.m; sourceTree = "<group>"; };
+		41AAD8EE1FF88A7D0020532B /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		41AAD8EF1FF88A7D0020532B /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		41AAD8F11FF891F40020532B /* TypingIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypingIndicatorView.h; sourceTree = "<group>"; };
+		41AAD8F21FF891F40020532B /* TypingIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypingIndicatorView.m; sourceTree = "<group>"; };
+		41AAD9081FF9774B0020532B /* ThisUser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThisUser.h; sourceTree = "<group>"; };
+		41AAD9091FF9774B0020532B /* ThisUser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThisUser.m; sourceTree = "<group>"; };
+		41AAD90B1FF978410020532B /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		41AAD90C1FF978410020532B /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		65F7EEF15018A7FF1AC4B8A0 /* Pods-TinkoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TinkoUITests/Pods-TinkoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D39E2ADB44701D2F4F468F7 /* Pods-TinkoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TinkoUITests/Pods-TinkoUITests.release.xcconfig"; sourceTree = "<group>"; };
 		76C193224EC9685852944812 /* Pods-Tinko.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinko.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tinko/Pods-Tinko.debug.xcconfig"; sourceTree = "<group>"; };
@@ -284,6 +314,12 @@
 		41AAD8711FEB59560020532B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				41AAD8F11FF891F40020532B /* TypingIndicatorView.h */,
+				41AAD8F21FF891F40020532B /* TypingIndicatorView.m */,
+				41AAD8E91FF889F20020532B /* MessageTableViewCell.h */,
+				41AAD8EB1FF889F20020532B /* MessageTableViewCell.m */,
+				41AAD8E81FF889F20020532B /* MessageTextView.h */,
+				41AAD8EA1FF889F20020532B /* MessageTextView.m */,
 				41AAD8721FEB59730020532B /* ProfileTableViewCell.h */,
 				41AAD8731FEB59730020532B /* ProfileTableViewCell.m */,
 				41AAD8741FEB59730020532B /* ProfileTableViewCell.xib */,
@@ -327,6 +363,7 @@
 		41AAD89B1FEF2DC70020532B /* TinkoVCGroups */ = {
 			isa = PBXGroup;
 			children = (
+				41AAD8D61FF69B540020532B /* TinkoDisplayGroups */,
 				41AAD89C1FEF2DE90020532B /* TinkoRootVC.h */,
 				41AAD89D1FEF2DE90020532B /* TinkoRootVC.m */,
 				41AAD89F1FEF5B1E0020532B /* TinkoTableVC.h */,
@@ -343,8 +380,16 @@
 		41AAD8CC1FF1C5320020532B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				41AAD8EE1FF88A7D0020532B /* Message.h */,
+				41AAD8EF1FF88A7D0020532B /* Message.m */,
 				41AAD8CD1FF1C5750020532B /* Meet.m */,
 				41AAD8CF1FF1C58D0020532B /* Meet.h */,
+				41AAD8E41FF7E7E20020532B /* SharedMeet.h */,
+				41AAD8E51FF7E7E20020532B /* SharedMeet.m */,
+				41AAD9081FF9774B0020532B /* ThisUser.h */,
+				41AAD9091FF9774B0020532B /* ThisUser.m */,
+				41AAD90B1FF978410020532B /* User.h */,
+				41AAD90C1FF978410020532B /* User.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -356,6 +401,19 @@
 				41AAD8D51FF4BE420020532B /* EKBHeap.h */,
 			);
 			path = Clients;
+			sourceTree = "<group>";
+		};
+		41AAD8D61FF69B540020532B /* TinkoDisplayGroups */ = {
+			isa = PBXGroup;
+			children = (
+				41AAD8D71FF69BCB0020532B /* TinkoDisplayRootVC.h */,
+				41AAD8D81FF69BCB0020532B /* TinkoDisplayRootVC.m */,
+				41AAD8DA1FF69DE90020532B /* TinkoDetailVC.h */,
+				41AAD8DB1FF69DE90020532B /* TinkoDetailVC.m */,
+				41AAD8DF1FF7274A0020532B /* TinkoDisccusionVC.h */,
+				41AAD8E01FF7274A0020532B /* TinkoDisccusionVC.m */,
+			);
+			path = TinkoDisplayGroups;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -644,22 +702,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41AAD8F31FF891F50020532B /* TypingIndicatorView.m in Sources */,
 				419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */,
 				41AAD8B21FF046A10020532B /* ManageTinkoTableVC.m in Sources */,
 				41AAD8891FECB48E0020532B /* CreateTableVC.m in Sources */,
 				41AAD89E1FEF2DE90020532B /* TinkoRootVC.m in Sources */,
 				41AAD8A11FEF5B1E0020532B /* TinkoTableVC.m in Sources */,
 				41AAD88F1FEDC8330020532B /* FriendsListSelectTableVC.m in Sources */,
+				41AAD8E21FF7274A0020532B /* TinkoDisccusionVC.m in Sources */,
+				41AAD8ED1FF889F20020532B /* MessageTableViewCell.m in Sources */,
 				41AAD8971FEEC6950020532B /* ProfileUpdateTableVC.m in Sources */,
 				419011EC1FEA22B9001FBF82 /* MeVC.m in Sources */,
+				41AAD8E61FF7E7E20020532B /* SharedMeet.m in Sources */,
+				41AAD8F01FF88A7D0020532B /* Message.m in Sources */,
 				41AAD8751FEB59730020532B /* ProfileTableViewCell.m in Sources */,
 				41AAD89A1FEEC6D20020532B /* TempVC.m in Sources */,
 				41AAD8D41FF4BDE80020532B /* EKBHeap.m in Sources */,
+				41AAD8D91FF69BCB0020532B /* TinkoDisplayRootVC.m in Sources */,
 				41AAD87A1FEB72840020532B /* FriendsListTableViewCell.m in Sources */,
 				41AAD8A51FEF631C0020532B /* NearbyTinkoTableVC.m in Sources */,
 				41AAD8CE1FF1C5750020532B /* Meet.m in Sources */,
+				41AAD8EC1FF889F20020532B /* MessageTextView.m in Sources */,
 				41AAD8AA1FF02F3A0020532B /* TinkoCell.m in Sources */,
+				41AAD8DD1FF69DE90020532B /* TinkoDetailVC.m in Sources */,
 				419011BB1FE9D2B6001FBF82 /* main.m in Sources */,
+				41AAD90D1FF978410020532B /* User.m in Sources */,
+				41AAD90A1FF9774B0020532B /* ThisUser.m in Sources */,
 				41AAD8931FEDCBC40020532B /* InvitationRangeOptionTVC.m in Sources */,
 				41AAD8821FEC5BAB0020532B /* MainTabBarVC.m in Sources */,
 				419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */,

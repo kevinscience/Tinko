@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XLPagerTabStripViewController.h"
 
-@interface TempVC : UIViewController
+@interface TempVC : UIViewController <XLPagerTabStripChildItem>
 
 @end

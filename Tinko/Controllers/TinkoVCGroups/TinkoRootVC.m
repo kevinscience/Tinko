@@ -10,6 +10,7 @@
 #import "TinkoTableVC.h"
 #import "NearbyTinkoTableVC.h"
 #import "ManageTinkoTableVC.h"
+#import "TempVC.h"
 
 @interface TinkoRootVC ()
 
@@ -81,6 +82,7 @@
     NearbyTinkoTableVC * child_0 = [[NearbyTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
     TinkoTableVC * child_1 = [[TinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
     ManageTinkoTableVC * child_2 = [[ManageTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
+    //TempVC * child_2 = [[TempVC alloc] init];
     
     if (!_isReload){
         

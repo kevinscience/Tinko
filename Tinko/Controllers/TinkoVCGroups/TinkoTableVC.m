@@ -9,6 +9,9 @@
 #import "TinkoTableVC.h"
 #import "TinkoCell.h"
 #import "Meet.h"
+#import "TinkoDisplayRootVC.h"
+#import "SharedMeet.h"
+#import "TinkoDisccusionVC.h"
 @import Firebase;
 
 @interface TinkoTableVC ()
@@ -21,6 +24,7 @@
 @property FIRDocumentSnapshot *lastSnapshot;
 @end
 
+//TODO add a automatically refresher call
 @implementation TinkoTableVC
 
 - (void)viewDidLoad {
@@ -71,6 +75,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
 
 - (void) fetchMeetsFromFirestore{
     NSString *queryString = [NSString stringWithFormat:@"selectedFriendsList.%@.postTime", _facebookId];
@@ -178,6 +183,21 @@
     
     return cell;
 }
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
+    //TinkoDisccusionVC *secondView = [TinkoDisccusionVC new];
+    secondView.hidesBottomBarWhenPushed = YES;
+    SharedMeet *sharedMeet = [SharedMeet sharedMeet];
+    Meet *meet = _meetsArray[indexPath.row];
+    [sharedMeet setMeet:meet];
+    [sharedMeet setMeetId:_meetsIdArray[indexPath.row]];
+    NSLog(@"TinkoTable: %@", meet.title);
+     [self.navigationController pushViewController: secondView animated:YES];
+}
+
+
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     //NSLog(@"willDisplayCell outside row: %ld, count: %lu", (long)indexPath.row, (unsigned long)_meetsArray.count);

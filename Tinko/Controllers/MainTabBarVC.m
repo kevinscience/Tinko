@@ -19,6 +19,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.delegate = self;
+    
 }
 
 -(bool) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController

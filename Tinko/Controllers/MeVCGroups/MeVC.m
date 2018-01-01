@@ -95,6 +95,8 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 0 && indexPath.row == 0){
         TempVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"TempVCID"];
+        //MessageViewController *secondView = [MessageViewController new];
+        secondView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController: secondView animated:YES];
     }
 }
