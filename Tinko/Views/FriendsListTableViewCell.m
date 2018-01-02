@@ -25,14 +25,19 @@
     // Initialization code
 }
 
-- (void)setCellData:(NSDictionary *)dic
+- (void)setCellData:(User *)user
 {
-    _facebookId = dic[@"facebookId"];
-    [self.header setText: dic[@"username"]];
-    [self.image sd_setImageWithURL:[NSURL URLWithString:dic[@"photoURL"]]
+    _facebookId = user.facebookId;
+    [self.header setText: user.username];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:user.photoURL]
                   placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
                            options:SDWebImageRefreshCached];
     
+}
+
+-(void)setInvitationCellData{
+    [self.header setText:@"Invite Friends"];
+    [self.image setImage:[UIImage imageNamed:@"inviteIcon"]];
 }
 
 

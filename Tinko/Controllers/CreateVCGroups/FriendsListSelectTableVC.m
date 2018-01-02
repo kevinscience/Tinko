@@ -10,6 +10,7 @@
 #import "InvitationRangeOptionTVC.h"
 #import "FriendsListTableViewCell.h"
 #import "CreateTableVC.h"
+#import "User.h"
 @import Firebase;
 
 @interface FriendsListSelectTableVC ()
@@ -42,7 +43,8 @@
              //NSLog(@"DOCUMENTS: %@", snapshot.documents);
              for (FIRDocumentSnapshot *document in snapshot.documents) {
                  //NSLog(@"%@ => %@", document.documentID, document.data);
-                 [_friendsListArray addObject:document.data];
+                 User *user = [[User alloc] initWithDictionary:document.data];
+                 [_friendsListArray addObject:user];
              }
              //NSLog(@"friendsListArray: %@", _friendsListArray);
              NSRange range = NSMakeRange(1, 1);
@@ -159,8 +161,8 @@
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:1];
             FriendsListTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             if(cell.accessoryType == UITableViewCellAccessoryCheckmark){
-                NSDictionary *dic = _friendsListArray[indexPath.row];
-                NSString *facebookId = dic[@"facebookId"];
+                User *user = _friendsListArray[indexPath.row];
+                NSString *facebookId = user.facebookId;
                 [selectedFriendsArray addObject: facebookId];
             }
         }

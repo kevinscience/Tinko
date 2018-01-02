@@ -32,6 +32,8 @@
     [super viewDidLoad];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
     
+  
+    
     _meetsArray = [[NSMutableArray alloc] init];
     _meetsIdArray = [[NSMutableArray alloc] init];
     _refresher = [[UIRefreshControl alloc] init];

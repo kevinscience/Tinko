@@ -1,6 +1,8 @@
 
 #import "ProfileTableViewCell.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "User.h"
+#import "ThisUser.h"
 @import Firebase;
 
 @interface ProfileTableViewCell ()
@@ -8,6 +10,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *header;
 @property (weak, nonatomic) IBOutlet UILabel *body;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
+
 
 @end
 
@@ -27,10 +30,13 @@
         if (snapshot.exists) {
             //NSLog(@"Document data: %@", snapshot.data);
             NSDictionary *dic = snapshot.data;
-            NSString *facebookId = dic[@"facebookId"];
-            [self.header setText: dic[@"username"]];
+            User *user = [[User alloc] initWithDictionary:dic];
+            ThisUser *thisUser = [ThisUser thisUser];
+            [thisUser setUser:user];
+            NSString *facebookId = user.facebookId;
+            [self.header setText: user.username];
             [self.body setText: facebookId];
-            [self.image sd_setImageWithURL:[NSURL URLWithString:dic[@"photoURL"]]
+            [self.image sd_setImageWithURL:[NSURL URLWithString:user.photoURL]
                               placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
                                        options:SDWebImageRefreshCached];
         } else {

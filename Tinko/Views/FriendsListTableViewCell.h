@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "User.h"
 
 @interface FriendsListTableViewCell : UITableViewCell
-- (void)setCellData:(NSDictionary *)dic;
+- (void)setCellData:(User *)user;
+-(void)setInvitationCellData;
 @end

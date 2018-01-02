@@ -10,6 +10,8 @@
 #import "ProfileTableViewCell.h"
 #import "FriendsListTableViewCell.h"
 #import "TempVC.h"
+#import "User.h"
+#import "ProfileUpdateTableVC.h"
 @import Firebase;
 
 @interface MeVC ()
@@ -26,6 +28,7 @@
     [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                 NSFontAttributeName:[UIFont systemFontOfSize:19 weight:UIFontWeightSemibold]}];
     
+   
     _table.delegate = self;
     _table.dataSource = self;
     
@@ -40,7 +43,8 @@
              //NSLog(@"DOCUMENTS: %@", snapshot.documents);
              for (FIRDocumentSnapshot *document in snapshot.documents) {
                  //NSLog(@"%@ => %@", document.documentID, document.data);
-                 [_friendsListArray addObject:document.data];
+                 User *user = [[User alloc] initWithDictionary:document.data];
+                 [_friendsListArray addObject:user];
              }
              NSLog(@"friendsListArray: %@", _friendsListArray);
              NSRange range = NSMakeRange(1, 1);
@@ -51,19 +55,33 @@
     
 }
 
+
 #pragma mark - UITableViewDataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 0 && indexPath.row == 0){
-        ProfileTableViewCell *cell = nil;
-        if (cell == nil)
-        {
-            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"ProfileTableViewCell" owner:self options:nil];
-            cell = (ProfileTableViewCell *)[nib objectAtIndex:0];
+    if(indexPath.section == 0){
+        if(indexPath.row == 0){
+            ProfileTableViewCell *cell = nil;
+            if (cell == nil)
+            {
+                NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"ProfileTableViewCell" owner:self options:nil];
+                cell = (ProfileTableViewCell *)[nib objectAtIndex:0];
+            }
+            [cell setCellData];
+            return cell;
+        } else{
+            FriendsListTableViewCell *cell = nil;
+            if (cell == nil)
+            {
+                NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"FriendsListTableViewCell" owner:self options:nil];
+                cell = (FriendsListTableViewCell *)[nib objectAtIndex:0];
+            }
+            [cell setInvitationCellData];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            return cell;
         }
-        [cell setCellData];
-        return cell;
+        
     } else {
         FriendsListTableViewCell *cell = nil;
         if (cell == nil)
@@ -80,7 +98,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if(section==0){
-        return 1;
+        return 2;
     } else{
         return _friendsListArray.count;
         //return 5;
@@ -94,15 +112,24 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 0 && indexPath.row == 0){
-        TempVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"TempVCID"];
+        ProfileUpdateTableVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileUpdateTableVCID"];
         //MessageViewController *secondView = [MessageViewController new];
         secondView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController: secondView animated:YES];
     }
+    [self.table deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
-
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat height = self.table.rowHeight;
+    if (indexPath.section == 0){
+        if(indexPath.row == 0){
+            height = 80.0f;
+        }
+    }
+    return height;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

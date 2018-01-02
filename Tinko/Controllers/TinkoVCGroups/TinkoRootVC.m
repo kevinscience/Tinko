@@ -24,6 +24,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.isProgressiveIndicator = YES;
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
 //    self.edgesForExtendedLayout = UIRectEdgeNone;
 //    self.extendedLayoutIncludesOpaqueBars = NO;
 //    self.automaticallyAdjustsScrollViewInsets = NO;
@@ -32,7 +34,8 @@
     [self.buttonBarView setBackgroundColor:[UIColor clearColor]];
     [self.buttonBarView.selectedBar setBackgroundColor:[UIColor orangeColor]];
     [self.buttonBarView removeFromSuperview];
-    [self.navigationController.navigationBar addSubview:self.buttonBarView];
+    //[self.navigationController.navigationBar addSubview:self.buttonBarView];
+    self.navigationItem.titleView = self.buttonBarView;
     
     self.changeCurrentIndexProgressiveBlock = ^void(XLButtonBarViewCell *oldCell, XLButtonBarViewCell *newCell, CGFloat progressPercentage, BOOL changeCurrentIndex, BOOL animated){
         if (changeCurrentIndex) {
