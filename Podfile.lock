@@ -42,7 +42,11 @@ PODS:
     - FirebaseCore (~> 4.0)
   - GeoFire (2.0.0):
     - Firebase/Database (~> 4.0)
+  - GoogleMaps (2.5.0):
+    - GoogleMaps/Maps (= 2.5.0)
   - GoogleMaps/Base (2.5.0)
+  - GoogleMaps/Maps (2.5.0):
+    - GoogleMaps/Base
   - GooglePlaces (2.5.0):
     - GoogleMaps/Base (= 2.5.0)
   - GoogleToolboxForMac/DebugUtils (2.1.3):
@@ -96,6 +100,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Firestore
   - GeoFire (from `https://github.com/firebase/geofire-objc`)
+  - GoogleMaps
   - GooglePlaces
   - LGPlusButtonsView (~> 1.1.0)
   - LoremIpsum (~> 1.0)
@@ -139,6 +144,6 @@ SPEC CHECKSUMS:
   SlackTextViewController: b854e62c1c156336bc4fd409c6ca79b5773e8f9d
   XLPagerTabStrip: 0f9f94246c84e7cb60a06ca435da68ac75c8b56e
 
-PODFILE CHECKSUM: 676cf803ead3f8e86157ffbe8df439fe09a1b66d
+PODFILE CHECKSUM: 97fdb1abe89ea21b9bc76fc6684fde81e0417e83
 
 COCOAPODS: 1.2.1

@@ -83,7 +83,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                                            FIRDocumentReference *myDocRef = [[self.db collectionWithPath:@"Users"] documentWithPath:facebookId];
                                            [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
                                                if (snapshot.exists) {
-                                                   NSLog(@"Document data: %@", snapshot.data);
+                                                   NSLog(@"LoginVC: Document data: %@", snapshot.data);
                                                } else {
                                                    NSLog(@"Document does not exist");
                                                    NSDictionary *myDocData = @{
@@ -140,17 +140,17 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                                                    }
                                                }
                                            }];
-                                           
+                                           //-------------------------------------------------------------------------------------------------------------------------------
+                                           //Start new viewController
+                                           MainTabBarVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"MainTabBarVCID"];
+                                           [self presentViewController: secondView animated:YES completion: nil];
+                                           //-------------------------------------------------------------------------------------------------------------------------------
                                        }];
                                       //------------------------------------------------------------------------------------------------------------------------------
                                       
                                       
                                       
-                                      //-------------------------------------------------------------------------------------------------------------------------------
-                                      //Start new viewController
-                                      MainTabBarVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"MainTabBarVCID"];
-                                      [self presentViewController: secondView animated:YES completion: nil];
-                                      //-------------------------------------------------------------------------------------------------------------------------------
+                                      
                                   }];
     } else {
         NSLog(error.localizedDescription);

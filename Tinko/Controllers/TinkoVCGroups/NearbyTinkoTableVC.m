@@ -39,6 +39,7 @@
     [locationManager startUpdatingLocation];
     
     [locationManager requestWhenInUseAuthorization];
+    //[self updateNearbyTinko];
 //    if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
 //        [locationManager requestWhenInUseAuthorization];
 //        NSLog(@"The app has user location permission");
@@ -48,12 +49,22 @@
 //    }
     
     
+    
+    
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+-(void)updateNearbyTinko{
     CLLocationCoordinate2D coordinate;
     
     coordinate.latitude=locationManager.location.coordinate.latitude;
     coordinate.longitude=locationManager.location.coordinate.longitude;
     NSLog(@"Latitude: %f, Longitude: %f", coordinate.latitude, coordinate.longitude);
-
+    
     
     self.dbRef = [[FIRDatabase database] reference];
     GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:[_dbRef child:@"Meets"]];
@@ -80,19 +91,21 @@
         }];
         
     }];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-//Need To Modify
--(void) viewDidAppear:(BOOL)animated{
-    
+-(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status{
+    if(status==kCLAuthorizationStatusNotDetermined){
+        [locationManager requestWhenInUseAuthorization];
+    } else if (status == kCLAuthorizationStatusAuthorizedWhenInUse){
+        [self updateNearbyTinko];
+    } else if (status == kCLAuthorizationStatusAuthorizedAlways){
+        [self updateNearbyTinko];
+    }else if (status == kCLAuthorizationStatusRestricted){
+        [locationManager requestWhenInUseAuthorization];
+    } else if (status == kCLAuthorizationStatusDenied){
+        [locationManager requestWhenInUseAuthorization];
+    }
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

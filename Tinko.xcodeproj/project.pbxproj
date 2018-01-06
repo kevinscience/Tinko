@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3EDEC291BC39D4779DA17C83 /* libPods-Tinko.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86929806ECD928830385DC40 /* libPods-Tinko.a */; };
+		411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */; };
 		419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AC1FE9D2B6001FBF82 /* AppDelegate.m */; };
 		419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AF1FE9D2B6001FBF82 /* LoginVC.m */; };
 		419011B31FE9D2B6001FBF82 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 419011B11FE9D2B6001FBF82 /* Main.storyboard */; };
@@ -76,6 +77,8 @@
 /* Begin PBXFileReference section */
 		0E6FDDD678A8926CA0089D34 /* Pods-Tinko.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinko.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tinko/Pods-Tinko.release.xcconfig"; sourceTree = "<group>"; };
 		3020BAC9277E3C84B4B3708A /* libPods-TinkoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TinkoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		411F7A5E1FFED58C00B8AD0C /* NearbyTinkoMapsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyTinkoMapsVC.h; sourceTree = "<group>"; };
+		411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyTinkoMapsVC.m; sourceTree = "<group>"; };
 		419011A81FE9D2B6001FBF82 /* Tinko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		419011AB1FE9D2B6001FBF82 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		419011AC1FE9D2B6001FBF82 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -373,6 +376,8 @@
 				41AAD8A41FEF631C0020532B /* NearbyTinkoTableVC.xib */,
 				41AAD8AF1FF046A10020532B /* ManageTinkoTableVC.h */,
 				41AAD8B01FF046A10020532B /* ManageTinkoTableVC.m */,
+				411F7A5E1FFED58C00B8AD0C /* NearbyTinkoMapsVC.h */,
+				411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */,
 			);
 			path = TinkoVCGroups;
 			sourceTree = "<group>";
@@ -720,6 +725,7 @@
 				41AAD8D41FF4BDE80020532B /* EKBHeap.m in Sources */,
 				41AAD8D91FF69BCB0020532B /* TinkoDisplayRootVC.m in Sources */,
 				41AAD87A1FEB72840020532B /* FriendsListTableViewCell.m in Sources */,
+				411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */,
 				41AAD8A51FEF631C0020532B /* NearbyTinkoTableVC.m in Sources */,
 				41AAD8CE1FF1C5750020532B /* Meet.m in Sources */,
 				41AAD8EC1FF889F20020532B /* MessageTextView.m in Sources */,

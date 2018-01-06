@@ -11,6 +11,7 @@
 #import "NearbyTinkoTableVC.h"
 #import "ManageTinkoTableVC.h"
 #import "TempVC.h"
+#import "NearbyTinkoMapsVC.h"
 
 @interface TinkoRootVC ()
 
@@ -26,6 +27,7 @@
     self.isProgressiveIndicator = YES;
     
     self.automaticallyAdjustsScrollViewInsets = NO;
+    //self.containerView.panGestureRecognizer
 //    self.edgesForExtendedLayout = UIRectEdgeNone;
 //    self.extendedLayoutIncludesOpaqueBars = NO;
 //    self.automaticallyAdjustsScrollViewInsets = NO;
@@ -82,10 +84,12 @@
 -(NSArray *)childViewControllersForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController
 {
     // create child view controllers that will be managed by XLPagerTabStripViewController
-    NearbyTinkoTableVC * child_0 = [[NearbyTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
+    //NearbyTinkoTableVC * child_0 = [[NearbyTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
     TinkoTableVC * child_1 = [[TinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
     ManageTinkoTableVC * child_2 = [[ManageTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
     //TempVC * child_2 = [[TempVC alloc] init];
+    //NearbyTinkoMapsVC *child_0 = [[NearbyTinkoMapsVC alloc] init];
+    NearbyTinkoMapsVC *child_0 = [self.storyboard instantiateViewControllerWithIdentifier:@"NearbyTinkoMapsVCID"];
     
     if (!_isReload){
         

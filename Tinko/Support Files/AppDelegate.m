@@ -11,6 +11,7 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 @import Firebase;
 @import GooglePlaces;
+@import GoogleMaps;
 
 @interface AppDelegate ()
 
@@ -23,6 +24,7 @@
     [FIRApp configure];
     FIRFirestore *defaultFirestore = [FIRFirestore firestore];
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+    [GMSServices provideAPIKey:@"AIzaSyCLaAIKKnOiTpZJbQD77rsZ0zIjEdB_WL8"];
     [GMSPlacesClient provideAPIKey:@"AIzaSyCLaAIKKnOiTpZJbQD77rsZ0zIjEdB_WL8"];
     
     
