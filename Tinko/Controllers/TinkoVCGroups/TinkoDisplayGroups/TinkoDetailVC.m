@@ -10,27 +10,38 @@
 #import "SharedMeet.h"
 #import "Meet.h"
 #import "TinkoCell.h"
+#import "WebClient.h"
+
 
 @interface TinkoDetailVC ()
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property Meet *meet;
+@property SharedMeet *sharedMeet;
+@property (nonatomic, strong) WebClient *client;
+@property NSString *facebookId;
+@property BOOL participating;
 @end
 
+//Fetch New Meet Data in ViewDIdLoad and apply to table
 @implementation TinkoDetailVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     _table.delegate = self;
     _table.dataSource = self;
+    _client = [[WebClient alloc] init];
     self.table.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
-    SharedMeet *sharedMeet = [SharedMeet sharedMeet];
-    _meet = [sharedMeet meet];
+    _sharedMeet = [SharedMeet sharedMeet];
+    _meet = [_sharedMeet meet];
     NSLog(@"TinkoDetail: %@", _meet.title);
+    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    NSArray *participatedUsersList = _meet.participatedUsersList;
+    _participating = [participatedUsersList containsObject:_facebookId];
     // Do any additional setup after loading the view from its nib.
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return 2;
     
 }
 
@@ -39,17 +50,55 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    TinkoCell *cell = nil;
-    if (cell == nil)
-    {
-        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
-        cell = (TinkoCell *)[nib objectAtIndex:0];
+    if(indexPath.row==0){
+        TinkoCell *cell = nil;
+        if (cell == nil)
+        {
+            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
+            cell = (TinkoCell *)[nib objectAtIndex:0];
+        }
+        [cell setCellData:_meet];
+        
+        
+        
+        return cell;
+    } else {
+        static NSString *simpleTableIdentifier = @"cell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleTableIdentifier];
+        
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+        }
+        
+        
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button addTarget:self action:@selector(participateButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [button setTitle:_participating ? @"Participating" : @"Partcipate" forState:UIControlStateNormal];
+        button.frame = CGRectMake(0.0, 0.0, 160.0, 40.0);
+        [cell addSubview:button];
+        return cell;
     }
-    [cell setCellData:_meet];
     
+}
+
+-(void)participateButtonClicked:(UIButton*)sender{
+    NSLog(@"participateButtonClicked");
+    NSString *meetId = [_sharedMeet meetId];
+    NSString *code = _participating ? @"leaveMeet" : @"participateMeet";
+    [_client participateOrLeaveMeetWithCode:code withMeetId:meetId withFacebookId:_facebookId withCompletion:^{
+        _participating = !_participating;
+        [sender setTitle:_participating ? @"Participating" : @"Partcipate" forState:UIControlStateNormal];
+    } withError:^(NSString *error) {
+        [self presentAlertControllerWithError:error];
+    }];
     
-    
-    return cell;
+}
+
+-(void)presentAlertControllerWithError:(NSString*)error{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

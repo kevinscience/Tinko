@@ -26,7 +26,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _meetsArray = [[NSMutableArray alloc] init];
     _meetsIdArray = [[NSMutableArray alloc] init];
     _meetsIdDictionary = [[NSMutableDictionary alloc] init];
@@ -98,6 +98,11 @@
             }
             if (diff.type == FIRDocumentChangeTypeRemoved) {
                 NSLog(@"Removed meet: %@", diff.document.data);
+                NSString *documentId = diff.document.documentID;
+                NSInteger index = [_meetsIdArray indexOfObject:documentId];
+                [_meetsArray removeObjectAtIndex:index];
+                [_meetsIdArray removeObjectAtIndex:index];
+                [self.tableView reloadData];
             }
         }
         

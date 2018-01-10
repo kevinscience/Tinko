@@ -22,11 +22,13 @@
 @synthesize delegate;
 @synthesize selectedFriendsArray;
 @synthesize allowPeopleNearby;
+@synthesize allFriends;
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     allowPeopleNearby = NO;
+    allFriends = YES;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -120,6 +122,7 @@
 -(void)allFriendsSwitchStateChanged:(id)sender{
     BOOL state = [(UISwitch *)sender isOn];
     //NSLog(state ? @"switch state YES" : @"Switch state NO");
+    allFriends = state;
     
     for(int i = 0; i<[_friendsListArray count]; i++){
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:1];

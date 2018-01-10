@@ -10,6 +10,8 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "LoginVC.h"
+#import "WebClient.h"
+#import "NSDictionary.h"
 @import Firebase;
 
 @interface TempVC ()
@@ -60,6 +62,26 @@
     }
     LoginVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginVCID"];
     [self presentViewController: secondView animated:YES completion: nil];
+}
+- (IBAction)testButtonPressed:(id)sender {
+    NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
+    [parameters setValue:@"id,name,email,friends,location,gender" forKey:@"fields"];
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        if(error != nil){
+            NSLog(@"FBSDKGraphRequest Error: %@", error);
+            return;
+        }
+        NSLog(@"result: %@", result);
+        NSDictionary *resultDic = [[NSDictionary alloc] initWithDictionary:result];
+        //NSString *resultJson = [resultDic bv_jsonStringWithPrettyPrint:NO];
+        //NSLog(@"resultJson: %@", resultJson);
+        WebClient *webClient = [[WebClient alloc] init];
+        [webClient postMethodWithCode:@"initializeNewUser" withData:result withCompletion:^{
+
+        } withError:^(NSString *error) {
+
+        }];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

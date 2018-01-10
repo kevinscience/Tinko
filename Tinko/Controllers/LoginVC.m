@@ -10,6 +10,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "MainTabBarVC.h"
+#import "WebClient.h"
 @import Firebase;
 
 @interface LoginVC()
@@ -75,75 +76,99 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                                            //NSLog(@"photoURL: %@", photoUrl);
                                            //NSLog(@"connection: %@", connection);
                                            //NSLog(@"Token is available : %@",[[FBSDKAccessToken currentAccessToken]tokenString]);
-                                           NSLog(@"result: %@", result);
-                                           NSLog(@"error: %@", error);
+                                           //NSLog(@"result: %@", result);
+                                           //NSLog(@"error: %@", error);
+                                           NSMutableDictionary *resultDic = [[NSMutableDictionary alloc] initWithDictionary:result];
+                                           [resultDic setObject:user.uid forKey:@"uid"];
+                                           NSLog(@"resultDic: %@", resultDic);
+                                           
+                                           WebClient *webClient = [[WebClient alloc] init];
+                                           [webClient postMethodWithCode:@"initializeNewUser" withData:resultDic withCompletion:^{
+                                               //Start new viewController
+                                               MainTabBarVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"MainTabBarVCID"];
+                                               [self presentViewController: secondView animated:YES completion: nil];
+                                               
+                                           } withError:^(NSString *error) {
+                                               UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];
+                                               [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                                                   NSError *signOutError;
+                                                   BOOL status = [[FIRAuth auth] signOut:&signOutError];
+                                                   if (!status) {
+                                                       NSLog(@"Error signing out: %@", signOutError);
+                                                       return;
+                                                   }
+                                                   FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+                                                   [loginManager logOut];
+                                                   [FBSDKAccessToken setCurrentAccessToken:nil];
+                                               }]];
+                                               [self presentViewController:alertController animated:YES completion:nil];
+                                           }];
+                                           
                                            
                                            //-------------------------------------------------------------------------------------------------------------------------
                                            // update to CLOUD FIRESTORE if there is no record
-                                           FIRDocumentReference *myDocRef = [[self.db collectionWithPath:@"Users"] documentWithPath:facebookId];
-                                           [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-                                               if (snapshot.exists) {
-                                                   NSLog(@"LoginVC: Document data: %@", snapshot.data);
-                                               } else {
-                                                   NSLog(@"Document does not exist");
-                                                   NSDictionary *myDocData = @{
-                                                                               @"facebookId": facebookId,
-                                                                               @"username": user.displayName,
-                                                                               @"email": user.email,
-                                                                               @"uid":user.uid,
-                                                                               @"photoURL":[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal",facebookId],
-                                                                               @"gender": gender,
-                                                                               @"location":location
-                                                                               };
-                                                   [[[self.db collectionWithPath:@"Users"] documentWithPath:facebookId] setData:myDocData completion:^(NSError * _Nullable error) {
-                                                                                                                                    if (error != nil) {
-                                                                                                                                        NSLog(@"Error adding document: %@", error);
-                                                                                                                                    } else {
-                                                                                                                                        NSLog(@"Document added with FacebookID: %@", facebookId);
-                                                                                                                                    }
-                                                                                                                                }];
-                                                   //--------------------------------------------------------------------------------------------------------------------------------------
-                                                   for(NSDictionary *friendDic in friendsList){
-                                                       NSString *friendFacebookId = friendDic[@"id"];
-                                                       FIRDocumentReference *friendDocRef = [[self.db collectionWithPath:@"Users"] documentWithPath:friendFacebookId];
-                                                       [friendDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-                                                           if (snapshot.exists) {
-                                                               NSLog(@"friendDic exisits %@, snapshot: %@", friendFacebookId, snapshot.data);
-                                                               //---------------------------------------------------------------------------------------------------------------------------
-                                                               //ADD his profile to my friends_list
-                                                               NSDictionary *friendDocData = snapshot.data;
-                                                               [[[myDocRef collectionWithPath:@"Friends_List"] documentWithPath:[friendDic[@"id"] stringValue]] setData:friendDocData completion:^(NSError * _Nullable error) {
-                                                                                                                                                                            if (error != nil) {
-                                                                                                                                                                                NSLog(@"add his profile to my friends_list Error adding document: %@", error);
-                                                                                                                                                                            } else {
-                                                                                                                                                                                NSLog(@"add his profile to my friends_list success Friend's facebookId: %@", friendDic[@"id"]);
-                                                                                                                                                                            }
-                                                                                                                                                                        }];
-                                                               //-----------------------------------------------------------------------------------------------------------------------------
-                                                               //Add my profile to his friends_list
-                                                               [[[friendDocRef collectionWithPath:@"Friends_List"] documentWithPath:facebookId] setData:myDocData completion:^(NSError * _Nullable error) {
-                                                                                                                                                                        if (error != nil) {
-                                                                                                                                                                            NSLog(@"add my profile to his friends_list Error adding document: %@", error);
-                                                                                                                                                                        } else {
-                                                                                                                                                                            NSLog(@"add my profile to his friends_list Friend's FacebookID: %@", friendDic[@"id"]);
-                                                                                                                                                                        }
-                                                                                                                                                                    }];
-                                                               
-                                                               
-                                                           } else {
-                                                               NSLog(@"friendDoc does not exist");
-                                                           }
-                                                       }];
-                                                       
-                                                       
-                                                       
-                                                   }
-                                               }
-                                           }];
+                                           //FIRDocumentReference *myDocRef = [[self.db collectionWithPath:@"Users"] documentWithPath:facebookId];
+//                                           [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+//                                               if (snapshot.exists) {
+//                                                   NSLog(@"LoginVC: Document data: %@", snapshot.data);
+//                                               } else {
+//                                                   NSLog(@"Document does not exist");
+//                                                   NSDictionary *myDocData = @{
+//                                                                               @"facebookId": facebookId,
+//                                                                               @"username": user.displayName,
+//                                                                               @"email": user.email,
+//                                                                               @"uid":user.uid,
+//                                                                               @"photoURL":[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=normal",facebookId],
+//                                                                               @"gender": gender,
+//                                                                               @"location":location
+//                                                                               };
+//                                                   [[[self.db collectionWithPath:@"Users"] documentWithPath:facebookId] setData:myDocData completion:^(NSError * _Nullable error) {
+//                                                                                                                                    if (error != nil) {
+//                                                                                                                                        NSLog(@"Error adding document: %@", error);
+//                                                                                                                                    } else {
+//                                                                                                                                        NSLog(@"Document added with FacebookID: %@", facebookId);
+//                                                                                                                                    }
+//                                                                                                                                }];
+//                                                   //--------------------------------------------------------------------------------------------------------------------------------------
+//                                                   for(NSDictionary *friendDic in friendsList){
+//                                                       NSString *friendFacebookId = friendDic[@"id"];
+//                                                       FIRDocumentReference *friendDocRef = [[self.db collectionWithPath:@"Users"] documentWithPath:friendFacebookId];
+//                                                       [friendDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+//                                                           if (snapshot.exists) {
+//                                                               NSLog(@"friendDic exisits %@, snapshot: %@", friendFacebookId, snapshot.data);
+//                                                               //---------------------------------------------------------------------------------------------------------------------------
+//                                                               //ADD his profile to my friends_list
+//                                                               NSDictionary *friendDocData = snapshot.data;
+//                                                               [[[myDocRef collectionWithPath:@"Friends_List"] documentWithPath:[friendDic[@"id"] stringValue]] setData:friendDocData completion:^(NSError * _Nullable error) {
+//                                                                                                                                                                            if (error != nil) {
+//                                                                                                                                                                                NSLog(@"add his profile to my friends_list Error adding document: %@", error);
+//                                                                                                                                                                            } else {
+//                                                                                                                                                                                NSLog(@"add his profile to my friends_list success Friend's facebookId: %@", friendDic[@"id"]);
+//                                                                                                                                                                            }
+//                                                                                                                                                                        }];
+//                                                               //-----------------------------------------------------------------------------------------------------------------------------
+//                                                               //Add my profile to his friends_list
+//                                                               [[[friendDocRef collectionWithPath:@"Friends_List"] documentWithPath:facebookId] setData:myDocData completion:^(NSError * _Nullable error) {
+//                                                                                                                                                                        if (error != nil) {
+//                                                                                                                                                                            NSLog(@"add my profile to his friends_list Error adding document: %@", error);
+//                                                                                                                                                                        } else {
+//                                                                                                                                                                            NSLog(@"add my profile to his friends_list Friend's FacebookID: %@", friendDic[@"id"]);
+//                                                                                                                                                                        }
+//                                                                                                                                                                    }];
+//
+//
+//                                                           } else {
+//                                                               NSLog(@"friendDoc does not exist");
+//                                                           }
+//                                                       }];
+//
+//
+//
+//                                                   }
+//                                               }
+//                                           }];
                                            //-------------------------------------------------------------------------------------------------------------------------------
-                                           //Start new viewController
-                                           MainTabBarVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"MainTabBarVCID"];
-                                           [self presentViewController: secondView animated:YES completion: nil];
+                                           
                                            //-------------------------------------------------------------------------------------------------------------------------------
                                        }];
                                       //------------------------------------------------------------------------------------------------------------------------------
@@ -156,7 +181,15 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         NSLog(error.localizedDescription);
     }
 }
-
+- (void) loginButtonDidLogOut:(FBSDKLoginButton *)loginButton{
+    NSLog(@"facebook logout button test");
+    NSError *signOutError;
+    BOOL status = [[FIRAuth auth] signOut:&signOutError];
+    if (!status) {
+        NSLog(@"Error signing out: %@", signOutError);
+        return;
+    }
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

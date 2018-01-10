@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3EDEC291BC39D4779DA17C83 /* libPods-Tinko.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86929806ECD928830385DC40 /* libPods-Tinko.a */; };
+		411A886A20037901002A5FA0 /* NSDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 411A886920037901002A5FA0 /* NSDictionary.m */; };
 		411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */; };
 		419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AC1FE9D2B6001FBF82 /* AppDelegate.m */; };
 		419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AF1FE9D2B6001FBF82 /* LoginVC.m */; };
@@ -53,6 +54,7 @@
 		41AAD8F31FF891F50020532B /* TypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8F21FF891F40020532B /* TypingIndicatorView.m */; };
 		41AAD90A1FF9774B0020532B /* ThisUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD9091FF9774B0020532B /* ThisUser.m */; };
 		41AAD90D1FF978410020532B /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD90C1FF978410020532B /* User.m */; };
+		41AD75E22001E6EC006C2CA3 /* WebClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AD75E12001E6EC006C2CA3 /* WebClient.m */; };
 		84F491EDD68AC802B16356FD /* libPods-TinkoUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C821D3FA0E52C89CBCE43D0E /* libPods-TinkoUITests.a */; };
 		AA4885207454EDCCDB166607 /* libPods-TinkoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3020BAC9277E3C84B4B3708A /* libPods-TinkoTests.a */; };
 /* End PBXBuildFile section */
@@ -77,6 +79,8 @@
 /* Begin PBXFileReference section */
 		0E6FDDD678A8926CA0089D34 /* Pods-Tinko.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinko.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tinko/Pods-Tinko.release.xcconfig"; sourceTree = "<group>"; };
 		3020BAC9277E3C84B4B3708A /* libPods-TinkoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TinkoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		411A886820037901002A5FA0 /* NSDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionary.h; sourceTree = "<group>"; };
+		411A886920037901002A5FA0 /* NSDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionary.m; sourceTree = "<group>"; };
 		411F7A5E1FFED58C00B8AD0C /* NearbyTinkoMapsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyTinkoMapsVC.h; sourceTree = "<group>"; };
 		411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyTinkoMapsVC.m; sourceTree = "<group>"; };
 		419011A81FE9D2B6001FBF82 /* Tinko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinko.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,6 +161,8 @@
 		41AAD9091FF9774B0020532B /* ThisUser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThisUser.m; sourceTree = "<group>"; };
 		41AAD90B1FF978410020532B /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		41AAD90C1FF978410020532B /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		41AD75E02001E6EC006C2CA3 /* WebClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebClient.h; sourceTree = "<group>"; };
+		41AD75E12001E6EC006C2CA3 /* WebClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebClient.m; sourceTree = "<group>"; };
 		65F7EEF15018A7FF1AC4B8A0 /* Pods-TinkoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TinkoUITests/Pods-TinkoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D39E2ADB44701D2F4F468F7 /* Pods-TinkoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TinkoUITests/Pods-TinkoUITests.release.xcconfig"; sourceTree = "<group>"; };
 		76C193224EC9685852944812 /* Pods-Tinko.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinko.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tinko/Pods-Tinko.debug.xcconfig"; sourceTree = "<group>"; };
@@ -395,6 +401,8 @@
 				41AAD9091FF9774B0020532B /* ThisUser.m */,
 				41AAD90B1FF978410020532B /* User.h */,
 				41AAD90C1FF978410020532B /* User.m */,
+				411A886820037901002A5FA0 /* NSDictionary.h */,
+				411A886920037901002A5FA0 /* NSDictionary.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -404,6 +412,8 @@
 			children = (
 				41AAD8D31FF4BDE80020532B /* EKBHeap.m */,
 				41AAD8D51FF4BE420020532B /* EKBHeap.h */,
+				41AD75E02001E6EC006C2CA3 /* WebClient.h */,
+				41AD75E12001E6EC006C2CA3 /* WebClient.m */,
 			);
 			path = Clients;
 			sourceTree = "<group>";
@@ -707,6 +717,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				411A886A20037901002A5FA0 /* NSDictionary.m in Sources */,
 				41AAD8F31FF891F50020532B /* TypingIndicatorView.m in Sources */,
 				419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */,
 				41AAD8B21FF046A10020532B /* ManageTinkoTableVC.m in Sources */,
@@ -736,6 +747,7 @@
 				41AAD90A1FF9774B0020532B /* ThisUser.m in Sources */,
 				41AAD8931FEDCBC40020532B /* InvitationRangeOptionTVC.m in Sources */,
 				41AAD8821FEC5BAB0020532B /* MainTabBarVC.m in Sources */,
+				41AD75E22001E6EC006C2CA3 /* WebClient.m in Sources */,
 				419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

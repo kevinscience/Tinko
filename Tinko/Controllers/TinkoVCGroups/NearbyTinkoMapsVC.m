@@ -9,26 +9,26 @@
 #import "NearbyTinkoMapsVC.h"
 #import <GeoFire/GeoFire.h>
 #import "Meet.h"
+#import "SharedMeet.h"
 #import "TinkoCell.h"
 #import "TinkoRootVC.h"
+#import "TinkoDisplayRootVC.h"
 @import Firebase;
 @import FirebaseDatabase;
 @import MapKit;
 
 @interface NearbyTinkoMapsVC ()
 @property (nonatomic) CLLocationCoordinate2D coordinate;
-//@property GMSMapView *mapView;
 @property (strong, nonatomic) FIRDatabaseReference *dbRef;
 @property (strong, nonatomic) GeoFire *geoRire;
 @property (weak, nonatomic) IBOutlet GMSMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *researchButton;
-//@property (weak, nonatomic) IBOutlet UIImageView *drawerImage;
-//@property UIPanGestureRecognizer *swipedOnImage;
-
 @property CGFloat drawerOriginalOriginY;
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property NSMutableArray *meetsArray;
 @property NSMutableArray *meetsIdArray;
+@property NSMutableDictionary *selectedMeet;
+@property GMSMarker *selectedMarker;
 @end
 
 @implementation NearbyTinkoMapsVC {
@@ -42,7 +42,8 @@
     _table.dataSource = self;
     _meetsArray = [[NSMutableArray alloc] init];
     _meetsIdArray = [[NSMutableArray alloc] init];
-
+    _selectedMeet = [[NSMutableDictionary alloc] init];
+    _selectedMarker = [[GMSMarker alloc] init];
     
     
     
@@ -99,10 +100,10 @@
     _mapView.delegate = self;
     _mapView.myLocationEnabled = YES;
     
-    GMSVisibleRegion visibleRegion = _mapView.projection.visibleRegion;
     [self doGeoFireQuery];
 }
 
+#pragma mark -- google maps delegate
 
 -(void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position{
     //self.mapView = mapView;
@@ -123,25 +124,41 @@
     
 }
 
+-(BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker{
+    NSString *key = marker.userData;
+    
+    NSInteger index = [_meetsIdArray indexOfObject:key];
+    NSLog(@"marker userdata: %@, index: %ld", key, (long)index);
+    [_meetsIdArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
+    [_meetsArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
+    [self.table reloadData];
+    return NO;
+}
+
 - (void) doGeoFireQuery{
     [_mapView clear];
     [_meetsArray removeAllObjects];
     [_meetsIdArray removeAllObjects];
-    GMSVisibleRegion visibleRegion = _mapView.projection.visibleRegion;
+    
     
     self.dbRef = [[FIRDatabase database] reference];
     GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:[_dbRef child:@"Meets"]];
 
-    //CLLocation *center = [[CLLocation alloc] initWithLatitude:lat longitude:lon];
-    // Query locations at [37.7832889, -122.4056973] with a radius of 600 meters
-    //GFCircleQuery *circleQuery = [geoFire queryAtLocation:center withRadius:7];
+    double lat = _mapView.camera.target.latitude;
+    double lon = _mapView.camera.target.longitude;
+    CLLocation *center = [[CLLocation alloc] initWithLatitude:lat longitude:lon];
+     //Query locations at [37.7832889, -122.4056973] with a radius of 600 meters
+    GFCircleQuery *circleQuery = [geoFire queryAtLocation:center withRadius:11];
+    float zoomlevel = _mapView.camera.zoom;
+   
+    GMSVisibleRegion visibleRegion = _mapView.projection.visibleRegion;
     MKCoordinateRegion region = [self convertGMSVisibleRegionToMKCoordinateRegion:visibleRegion];
     GFRegionQuery *regionQuery = [geoFire queryWithRegion:region];
-    FIRDatabaseHandle queryHandle = [regionQuery observeEventType:GFEventTypeKeyEntered withBlock:^(NSString *key, CLLocation *location) {
+    FIRDatabaseHandle queryHandle = [zoomlevel>11.07?regionQuery:circleQuery observeEventType:GFEventTypeKeyEntered withBlock:^(NSString *key, CLLocation *location) {
         NSLog(@"Key '%@' entered the search area and is at location '%@'", key, location);
         CLLocationCoordinate2D loc = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
         
-        [_meetsIdArray addObject:key];
+        
         
         FIRDocumentReference *docRef = [[FIRFirestore.firestore collectionWithPath:@"Meets"] documentWithPath:key];
         [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
@@ -152,9 +169,11 @@
                 marker.position = loc;
                 marker.title = meet.title;
                 marker.snippet = meet.placeName;
+                marker.userData = key;
                 marker.map = _mapView;
                 
-                [_meetsArray insertObject:meet atIndex:0];
+                [_meetsIdArray addObject:key];
+                [_meetsArray addObject:meet];
                 [self.table reloadData];
                 
             } else {
@@ -185,6 +204,8 @@
 }
 
 
+#pragma mark - location manager
+
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status{
     if(status==kCLAuthorizationStatusNotDetermined){
         [locationManager requestWhenInUseAuthorization];
@@ -198,22 +219,10 @@
         [locationManager requestWhenInUseAuthorization];
     }
 }
-//
-//-(void)swipeOnImageActivity:(UIPanGestureRecognizer*)sender
-//{
-//    CGPoint translation = [sender translationInView:self.view];
-//
-//    if (sender.state == UIGestureRecognizerStateBegan) {
-//        _drawerOriginalOriginY = _drawerImage.frame.origin.y;
-//    }
-//
-//    if (sender.state == UIGestureRecognizerStateChanged){
-//        _drawerImage.frame = CGRectMake(0, _drawerOriginalOriginY + translation.y, self.view.frame.size.width, 33);
-//
-//        _table.frame = CGRectMake(0, _drawerOriginalOriginY+33+translation.y, self.view.frame.size.width, self.view.frame.size.height - _drawerOriginalOriginY-33-translation.y);
-//    }
-//
-//}
+
+
+#pragma mark - gesture recognizer
+
 
 -(void)swipeOnTableViewActivity:(UIPanGestureRecognizer*)sender
 {
@@ -245,6 +254,8 @@
     
 }
 
+
+
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
     return YES;
 }
@@ -270,7 +281,7 @@
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
         }
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     } else {
         TinkoCell *cell = nil;
@@ -288,6 +299,26 @@
     }
     
 }
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.row==0){
+         [self.table deselectRowAtIndexPath:indexPath animated:NO];
+    } else {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
+        //TinkoDisccusionVC *secondView = [TinkoDisccusionVC new];
+        secondView.hidesBottomBarWhenPushed = YES;
+        SharedMeet *sharedMeet = [SharedMeet sharedMeet];
+        Meet *meet = _meetsArray[indexPath.row-1];
+        [sharedMeet setMeet:meet];
+        [sharedMeet setMeetId:_meetsIdArray[indexPath.row-1]];
+        NSLog(@"TinkoTable: %@", meet.title);
+        [self.navigationController pushViewController: secondView animated:YES];
+         [self.table deselectRowAtIndexPath:indexPath animated:YES];
+    }
+    
+}
+
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.row == 0){

@@ -33,7 +33,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
   
     

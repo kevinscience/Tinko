@@ -14,6 +14,7 @@
 @property (nonatomic, assign) id<FriendsListSelectTableVCDelegate> delegate;
 @property (nonatomic, retain) NSMutableArray* selectedFriendsArray;
 @property (nonatomic) BOOL allowPeopleNearby;
+@property (nonatomic) BOOL allFriends;
 @end
 
 @protocol FriendsListSelectTableVCDelegate

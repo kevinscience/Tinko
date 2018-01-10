@@ -23,6 +23,7 @@
 @property GMSPlace *place;
 @property NSMutableArray *selectedFriendsArray;
 @property BOOL allowPeopleNearby;
+@property BOOL allFriends;
 @end
 
 @implementation CreateTableVC
@@ -83,6 +84,7 @@
                                        @"coordinate" : coordinate
                                        },
                            @"allowPeopleNearby" : [NSNumber numberWithBool:_allowPeopleNearby],
+                           @"allFriends" : [NSNumber numberWithBool:_allFriends],
                            @"selectedFriendsList" : selectedFriendsDictionary,
                            @"maxNo" : maxNo,
                            @"description" : description,
@@ -178,6 +180,7 @@
 -(void)friendsListSelectTableVCDidFinish:(FriendsListSelectTableVC *)friendListSelectTableVC{
     _selectedFriendsArray = friendListSelectTableVC.selectedFriendsArray;
     _allowPeopleNearby = friendListSelectTableVC.allowPeopleNearby;
+    _allFriends = friendListSelectTableVC.allFriends;
     //NSLog(@"delegate method: %@",selectedFriendsArray);
     //NSLog(allowPeopleNearby ? @"allowPeopleNearby YES" : @"allowPeopleNearby NO");
 }
