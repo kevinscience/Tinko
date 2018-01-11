@@ -17,6 +17,7 @@
 @interface ManageTinkoTableVC ()
 @property NSMutableArray<Meet *> *meetsArray;
 @property NSMutableArray *meetsIdArray;
+@property NSMutableArray *meetsUserArray;
 @property NSMutableDictionary *meetsIdDictionary;
 @property FIRFirestore *db;
 @property NSString *facebookId;
@@ -29,6 +30,7 @@
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _meetsArray = [[NSMutableArray alloc] init];
     _meetsIdArray = [[NSMutableArray alloc] init];
+    _meetsUserArray = [[NSMutableArray alloc] init];
     _meetsIdDictionary = [[NSMutableDictionary alloc] init];
     _db = FIRFirestore.firestore;
     _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
@@ -52,11 +54,24 @@
             for (FIRDocumentSnapshot *document in snapshot.documents) {
                 //NSLog(@"%@ => %@", document.documentID, document.data);
                 Meet *meet = [[Meet alloc] initWithDictionary:document.data];
-                [_meetsArray addObject:meet];
-                [_meetsIdArray addObject:document.documentID];
-                [_meetsIdDictionary setObject:@YES forKey:document.documentID];
+                NSString *creatorFacebookId = meet.creatorFacebookId;
+                FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+                [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                    User *user;
+                    if (snapshot != nil) {
+                        //NSLog(@"Document data: %@", snapshot.data);
+                        user = [[User alloc] initWithDictionary:snapshot.data];
+                        
+                    } else {
+                        NSLog(@"Document does not exist");
+                        user = [[User alloc] init];
+                    }
+                    [_meetsUserArray addObject:user];
+                    [_meetsArray addObject:meet];
+                    [_meetsIdArray addObject:document.documentID];
+                    [self.tableView reloadData];
+                }];
             }
-            [self.tableView reloadData];
             //NSLog(@"%@", _meetsIdDictionary);
             [self addNewAddMeetsObserver];
         }
@@ -77,19 +92,34 @@
             if (diff.type == FIRDocumentChangeTypeAdded) {
                 
                 NSString *documentId = diff.document.documentID;
-                if([_meetsIdDictionary objectForKey:documentId] == nil){
+                if([_meetsIdArray indexOfObject:diff.document.documentID] == NSNotFound){
                     Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
-                    NSLog(@"New meet: %@", diff.document.data);
-                    [_meetsArray addObject:meet];
-                    [_meetsIdArray addObject:documentId];
-                    [_meetsIdDictionary setObject:@YES forKey:documentId];
                     
-                    //HEAP SORT
-                    NSDictionary *doc = heapSort(_meetsArray, _meetsIdArray);
-                    //NSLog(@"%@", doc);
-                    _meetsArray = doc[@"meetsArray"];
-                    _meetsIdArray = doc[@"meetsIdArray"];
-                    [self.tableView reloadData];
+                    NSString *creatorFacebookId = meet.creatorFacebookId;
+                    FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+                    [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                        User *user;
+                        if (snapshot != nil) {
+                            //NSLog(@"Document data: %@", snapshot.data);
+                            user = [[User alloc] initWithDictionary:snapshot.data];
+                            
+                        } else {
+                            NSLog(@"Document does not exist");
+                            user = [[User alloc] init];
+                        }
+                        [_meetsUserArray addObject:user];
+                        [_meetsArray addObject:meet];
+                        [_meetsIdArray addObject:documentId];
+                        
+                        //HEAP SORT
+                        NSDictionary *doc = heapSort(_meetsArray, _meetsIdArray, _meetsUserArray);
+                        //NSLog(@"%@", doc);
+                        _meetsArray = doc[@"meetsArray"];
+                        _meetsIdArray = doc[@"meetsIdArray"];
+                        _meetsUserArray = doc[@"meetsUserArray"];
+                        
+                        [self.tableView reloadData];
+                    }];
                 }
                 
             }
@@ -102,6 +132,7 @@
                 NSInteger index = [_meetsIdArray indexOfObject:documentId];
                 [_meetsArray removeObjectAtIndex:index];
                 [_meetsIdArray removeObjectAtIndex:index];
+                [_meetsUserArray removeObjectAtIndex:index];
                 [self.tableView reloadData];
             }
         }
@@ -136,7 +167,7 @@
         cell = (TinkoCell *)[nib objectAtIndex:0];
     }
     if(_meetsArray.count > 0 && _meetsArray.count > indexPath.row){
-        [cell setCellData:_meetsArray[indexPath.row]];
+        [cell setCellData:_meetsArray[indexPath.row] withUser:_meetsUserArray[indexPath.row]];
     }
 
 

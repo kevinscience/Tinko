@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "User.h"
 
 @interface Message : NSObject
 
@@ -17,7 +18,7 @@
 @property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) NSDate *postTime;
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary withUser:(User*)user;
 - (instancetype)initWithFullDataDictionary:(NSDictionary *)dictionary;
 
 @end

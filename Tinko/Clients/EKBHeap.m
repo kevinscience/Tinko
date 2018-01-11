@@ -30,7 +30,7 @@ int heapLastIndex (NSMutableArray* A){
     return (int)A.count-1;
 }
 
-void maxHeapify(NSMutableArray<Meet *>* A, int indexRoot, NSMutableArray* B){
+void maxHeapify(NSMutableArray<Meet *>* A, int indexRoot, NSMutableArray* B, NSMutableArray* C){
     if(leftLeafIndex(indexRoot)>heapLastIndex(A)){
         return;
     }
@@ -55,34 +55,40 @@ void maxHeapify(NSMutableArray<Meet *>* A, int indexRoot, NSMutableArray* B){
     if(largestIndex != indexRoot){
         [A exchangeObjectAtIndex:indexRoot withObjectAtIndex:largestIndex];
         [B exchangeObjectAtIndex:indexRoot withObjectAtIndex:largestIndex];
-        maxHeapify(A, largestIndex, B);
+        [C exchangeObjectAtIndex:indexRoot withObjectAtIndex:largestIndex];
+        maxHeapify(A, largestIndex, B, C);
     }
 }
 
-void buildMaxHeap(NSMutableArray<Meet *>* A, NSMutableArray* B){
+void buildMaxHeap(NSMutableArray<Meet *>* A, NSMutableArray* B, NSMutableArray* C){
     if(A.count<2) return;
     int lastParentIndex = (int)A.count/2;
     for (int parentIndex = lastParentIndex; parentIndex >= 0; parentIndex--) {
-        maxHeapify(A, parentIndex, B);
+        maxHeapify(A, parentIndex, B, C);
     }
 }
 
-NSDictionary* heapSort(NSMutableArray<Meet *>* A, NSMutableArray* B){
-    if(A.count<2) return @{@"meetsArray":A, @"meetsIdArray":B};
-    buildMaxHeap(A, B);
+NSDictionary* heapSort(NSMutableArray<Meet *>* A, NSMutableArray* B, NSMutableArray* C){
+    if(A.count<2) return @{@"meetsArray":A, @"meetsIdArray":B, @"meetsUserArray":C};
+    buildMaxHeap(A, B, C);
     NSMutableArray* sortedA = [NSMutableArray new];
     NSMutableArray* sortedB = [NSMutableArray new];
+    NSMutableArray* sortedC = [NSMutableArray new];
     for (int i = (int)A.count-1; i>0; i--) {
         [sortedA insertObject:A[0] atIndex:0];
         [sortedB insertObject:B[0] atIndex:0];
+        [sortedC insertObject:C[0] atIndex:0];
         [A exchangeObjectAtIndex:0 withObjectAtIndex:A.count-1];
         [B exchangeObjectAtIndex:0 withObjectAtIndex:B.count-1];
+        [C exchangeObjectAtIndex:0 withObjectAtIndex:C.count-1];
         [A removeLastObject];
         [B removeLastObject];
-        maxHeapify(A, 0, B);
+        [C removeLastObject];
+        maxHeapify(A, 0, B, C);
     }
     [sortedA insertObject:A[0] atIndex:0];
     [sortedB insertObject:B[0] atIndex:0];
-    return @{@"meetsArray":sortedA, @"meetsIdArray":sortedB};
+    [sortedC insertObject:C[0] atIndex:0];
+    return @{@"meetsArray":sortedA, @"meetsIdArray":sortedB, @"meetsUserArray": sortedC};
 }
 @end

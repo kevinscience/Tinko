@@ -57,7 +57,7 @@
             NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
             cell = (TinkoCell *)[nib objectAtIndex:0];
         }
-        [cell setCellData:_meet];
+        [cell setCellData:_meet withUser:nil];
         
         
         

@@ -13,11 +13,14 @@
 #import "SharedMeet.h"
 #import "TinkoDisccusionVC.h"
 #import "LGPlusButtonsView.h"
+#import "EKBHeap.h"
+#import "User.h"
 @import Firebase;
 
 @interface TinkoTableVC ()
 @property NSMutableArray *meetsArray;
 @property NSMutableArray *meetsIdArray;
+@property NSMutableArray *meetsUserArray;
 @property UIRefreshControl *refresher;
 @property FIRFirestore *db;
 @property NSString *facebookId;
@@ -25,6 +28,7 @@
 @property FIRDocumentSnapshot *lastSnapshot;
 @property (strong, nonatomic) LGPlusButtonsView *plusButtonsViewMain;
 @property BOOL orderByPostTime; // true: order by postTime, false: order by startTime;
+@property id<FIRListenerRegistration> listener;
 @end
 
 //TODO add a automatically refresher call
@@ -39,6 +43,7 @@
     
     _meetsArray = [[NSMutableArray alloc] init];
     _meetsIdArray = [[NSMutableArray alloc] init];
+    _meetsUserArray = [[NSMutableArray alloc] init];
     _refresher = [[UIRefreshControl alloc] init];
     _refresher.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh"];
     [self.tableView addSubview:_refresher];
@@ -47,34 +52,9 @@
     _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
     _lastMeetReached = NO;
     _orderByPostTime = YES;
-    //[self fetchMeetsFromFirestore];
-    
-    
+    [self fetchMeetsFromFirestore];
+    [self addFloatButton];
 
-    //TODO SORT ALGORITHM OR RETHINK DATA STRUCTURE
-//    [query addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
-//         if (snapshot == nil) {
-//             NSLog(@"Error fetching documents: %@", error);
-//             return;
-//         }
-//         for (FIRDocumentChange *diff in snapshot.documentChanges) {
-//             if (diff.type == FIRDocumentChangeTypeAdded) {
-//                 NSLog(@"New meet: %@", diff.document.data);
-//
-//                 Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
-//                 [_meetsArray addObject:meet];
-//                 [_meetsIdArray addObject:diff.document.documentID];
-//             }
-//             if (diff.type == FIRDocumentChangeTypeModified) {
-//                 NSLog(@"Modified meet: %@", diff.document.data);
-//             }
-//             if (diff.type == FIRDocumentChangeTypeRemoved) {
-//                 NSLog(@"Removed meet: %@", diff.document.data);
-//             }
-//         }
-//        [self.tableView reloadData];
-//     }];
-    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -86,7 +66,6 @@
 - (void) fetchMeetsFromFirestore{
     [_meetsArray removeAllObjects];
     [_meetsIdArray removeAllObjects];
-    
     NSString *queryString;
     if(_orderByPostTime){
         queryString = [NSString stringWithFormat:@"selectedFriendsList.%@.postTime", _facebookId];
@@ -104,19 +83,117 @@
             for (FIRDocumentSnapshot *document in snapshot.documents) {
                 //NSLog(@"%@ => %@", document.documentID, document.data);
                 Meet *meet = [[Meet alloc] initWithDictionary:document.data];
+                NSString *creatorFacebookId = meet.creatorFacebookId;
+                FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+                [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                    User *user;
+                    if (snapshot != nil) {
+                        //NSLog(@"Document data: %@", snapshot.data);
+                        user = [[User alloc] initWithDictionary:snapshot.data];
+                        
+                    } else {
+                        NSLog(@"Document does not exist");
+                        user = [[User alloc] init];
+                    }
+                    [_meetsUserArray addObject:user];
+                    [_meetsArray addObject:meet];
+                    [_meetsIdArray addObject:document.documentID];
+                    [self.tableView reloadData];
+                }];
                 
-                [_meetsArray addObject:meet];
-                [_meetsIdArray addObject:document.documentID];
             }
             
             _lastSnapshot = snapshot.documents.lastObject;
-            
-            
-            [_refresher endRefreshing];
-            [self.tableView reloadData];
+            [self addMeetListener];
         }
     }];
 }
+
+
+
+-(void)addMeetListener{
+    NSString *queryString;
+    if(_orderByPostTime){
+        queryString = [NSString stringWithFormat:@"selectedFriendsList.%@.postTime", _facebookId];
+    } else {
+        queryString = [NSString stringWithFormat:@"selectedFriendsList.%@.startTime", _facebookId];
+    }
+    
+    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
+    FIRQuery *query = [[meetsRef queryOrderedByField:queryString] queryLimitedTo:10];
+    _listener = [query addSnapshotListener:^(FIRQuerySnapshot * _Nullable snapshot, NSError * _Nullable error) {
+        if (snapshot == nil) {
+            NSLog(@"Error fetching documents: %@", error);
+            return;
+        }
+        for (FIRDocumentChange *diff in snapshot.documentChanges) {
+            if (diff.type == FIRDocumentChangeTypeAdded) {
+                //NSLog(@"New city: %@", diff.document.data);
+                if([_meetsIdArray indexOfObject:diff.document.documentID] == NSNotFound){
+                    Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
+                    
+                    NSString *creatorFacebookId = meet.creatorFacebookId;
+                    FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+                    [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                        User *user;
+                        if (snapshot != nil) {
+                            //NSLog(@"Document data: %@", snapshot.data);
+                            user = [[User alloc] initWithDictionary:snapshot.data];
+                            
+                        } else {
+                            NSLog(@"Document does not exist");
+                            user = [[User alloc] init];
+                        }
+                        
+                        if(_orderByPostTime){
+                            [_meetsUserArray insertObject:user atIndex:0];
+                            [_meetsArray insertObject:meet atIndex:0];
+                            [_meetsIdArray insertObject:diff.document.documentID atIndex:0];
+                        } else {
+                            [_meetsUserArray addObject:user];
+                            [_meetsArray addObject:meet];
+                            [_meetsIdArray addObject:diff.document.documentID];
+                            //HEAP SORT
+                            NSDictionary *doc = heapSort(_meetsArray, _meetsIdArray, _meetsUserArray);
+                            //NSLog(@"%@", doc);
+                            _meetsArray = doc[@"meetsArray"];
+                            _meetsIdArray = doc[@"meetsIdArray"];
+                            _meetsUserArray = doc[@"meetsUserArray"];
+                            
+                            if([_meetsIdArray indexOfObject:diff.document.documentID] == _meetsArray.count-1){
+                                _lastSnapshot = diff.document;
+                            }
+                        }
+                        [self.tableView reloadData];
+                        
+                    }];
+                    
+                    
+                    
+                    
+                }
+                
+            }
+            if (diff.type == FIRDocumentChangeTypeModified) {
+                NSLog(@"Modified city: %@", diff.document.data);
+            }
+            if (diff.type == FIRDocumentChangeTypeRemoved) {
+                NSLog(@"Removed city: %@", diff.document.data);
+                NSString *documentId = diff.document.documentID;
+                NSInteger index = [_meetsIdArray indexOfObject:documentId];
+                [_meetsArray removeObjectAtIndex:index];
+                [_meetsIdArray removeObjectAtIndex:index];
+                [_meetsUserArray removeObjectAtIndex:index];
+                [self.tableView reloadData];
+            }
+        }
+        
+        
+    }];
+
+}
+
+
 
 - (void) loadMoreMeetFromFirestore{
     @try{
@@ -126,19 +203,13 @@
         } else {
             queryString = [NSString stringWithFormat:@"selectedFriendsList.%@.startTime", _facebookId];
         }
-        
+
         FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
-        FIRQuery *query = [[[meetsRef queryOrderedByField:queryString] queryLimitedTo:7] queryStartingAfterDocument:_lastSnapshot];
+        FIRQuery *query = [[[meetsRef queryOrderedByField:queryString] queryLimitedTo:_meetsArray.count] queryStartingAfterDocument:_lastSnapshot];
         [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
             if (error != nil) {
                 NSLog(@"Error getting documents: %@", error);
             } else {
-                for (FIRDocumentSnapshot *document in snapshot.documents) {
-                    //NSLog(@"%@ => %@", document.documentID, document.data);
-                    Meet *meet = [[Meet alloc] initWithDictionary:document.data];
-                    [_meetsArray addObject:meet];
-                    [_meetsIdArray addObject:document.documentID];
-                }
                 
                 //NSLog(@"lastDoc: %@", _lastSnapshot.data);
                 if([_lastSnapshot.documentID isEqualToString:snapshot.documents.lastObject.documentID]) {
@@ -146,28 +217,47 @@
                     _lastMeetReached = YES;
                 } else {
                     NSLog(@"loadMore: lastMeetReached NO");
-                    _lastSnapshot = snapshot.documents.lastObject;
-                    if(_meetsArray != nil){
-                        [self.tableView reloadData];
+                    for (FIRDocumentSnapshot *document in snapshot.documents) {
+                        //NSLog(@"%@ => %@", document.documentID, document.data);
+                        Meet *meet = [[Meet alloc] initWithDictionary:document.data];
+                        NSString *creatorFacebookId = meet.creatorFacebookId;
+                        FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+                        [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                            User *user;
+                            if (snapshot != nil) {
+                                //NSLog(@"Document data: %@", snapshot.data);
+                                user = [[User alloc] initWithDictionary:snapshot.data];
+                                
+                            } else {
+                                NSLog(@"Document does not exist");
+                                user = [[User alloc] init];
+                            }
+                            [_meetsUserArray addObject:user];
+                            [_meetsArray addObject:meet];
+                            [_meetsIdArray addObject:document.documentID];
+                            [self.tableView reloadData];
+                        }];
                     }
+
+                    _lastSnapshot = snapshot.documents.lastObject;
                 }
-                
+
             }
         }];
     }
     @catch(NSException *exception){
-        
+
     }
     @finally{
-        
+
     }
     
 }
 
 - (void) pullToRefresh {
-    
-    _lastMeetReached = NO;
-    [self fetchMeetsFromFirestore];
+    [_refresher endRefreshing];
+    //_lastMeetReached = NO;
+    //[self fetchMeetsFromFirestore];
     
     
 }
@@ -196,7 +286,7 @@
         cell = (TinkoCell *)[nib objectAtIndex:0];
     }
     if(_meetsArray.count > 0 && _meetsArray.count > indexPath.row){
-        [cell setCellData:_meetsArray[indexPath.row]];
+        [cell setCellData:_meetsArray[indexPath.row] withUser:_meetsUserArray[indexPath.row]];
     }
     
     
@@ -244,38 +334,34 @@
 {
     return [UIColor whiteColor];
 }
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self fetchMeetsFromFirestore];
-    
+
+-(void) addFloatButton{
     _plusButtonsViewMain = [LGPlusButtonsView plusButtonsViewWithNumberOfButtons:1
                                                          firstButtonIsPlusButton:YES
                                                                    showAfterInit:YES
                                                                    actionHandler:^(LGPlusButtonsView *plusButtonView, NSString *title, NSString *description, NSUInteger index)
                             {
                                 NSLog(@"actionHandler | title: %@, description: %@, index: %lu", title, description, (long unsigned)index);
-
-                                if(_orderByPostTime){
-                                    _orderByPostTime = NO;
-                                    
-                                } else {
-                                    _orderByPostTime = YES;
-                                }
+                                [_listener remove];
+                                _orderByPostTime = !_orderByPostTime;
+                                _lastMeetReached = NO;
                                 [self fetchMeetsFromFirestore];
                             }];
-
+    
     //_plusButtonsViewMain.observedScrollView = self.scrollView;
     //_plusButtonsViewMain.coverColor = [UIColor colorWithWhite:1.f alpha:0.7];
+    _plusButtonsViewMain.observedScrollView = self.tableView;
     _plusButtonsViewMain.position = LGPlusButtonsViewPositionBottomRight;
-    _plusButtonsViewMain.offset = CGPointMake(0.f, -50.f);
+    CGFloat tabbarHeight = self.tabBarController.tabBar.frame.size.height;
+    _plusButtonsViewMain.offset = CGPointMake(0.f, -10.0f - tabbarHeight);
     _plusButtonsViewMain.plusButtonAnimationType = LGPlusButtonAnimationTypeRotate;
-
+    
     [_plusButtonsViewMain setButtonsTitles:@[@"+"] forState:UIControlStateNormal];
     [_plusButtonsViewMain setDescriptionsTexts:@[@""]];
     [_plusButtonsViewMain setButtonsImages:@[[NSNull new]]
                                   forState:UIControlStateNormal
                             forOrientation:LGPlusButtonsViewOrientationAll];
-
+    
     [_plusButtonsViewMain setButtonsAdjustsImageWhenHighlighted:NO];
     [_plusButtonsViewMain setButtonsBackgroundColor:[UIColor colorWithRed:0.f green:0.5 blue:1.f alpha:1.f] forState:UIControlStateNormal];
     [_plusButtonsViewMain setButtonsBackgroundColor:[UIColor colorWithRed:0.2 green:0.6 blue:1.f alpha:1.f] forState:UIControlStateHighlighted];
@@ -300,7 +386,7 @@
     //    [_plusButtonsViewMain setButtonAtIndex:2 backgroundColor:[UIColor colorWithRed:1.f green:0.6 blue:0.2 alpha:1.f] forState:UIControlStateHighlighted];
     //    [_plusButtonsViewMain setButtonAtIndex:3 backgroundColor:[UIColor colorWithRed:0.f green:0.7 blue:0.f alpha:1.f] forState:UIControlStateNormal];
     //    [_plusButtonsViewMain setButtonAtIndex:3 backgroundColor:[UIColor colorWithRed:0.f green:0.8 blue:0.f alpha:1.f] forState:UIControlStateHighlighted];
-
+    
     //    [_plusButtonsViewMain setDescriptionsBackgroundColor:[UIColor whiteColor]];
     //    [_plusButtonsViewMain setDescriptionsTextColor:[UIColor blackColor]];
     //    [_plusButtonsViewMain setDescriptionsLayerShadowColor:[UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.f]];
@@ -309,17 +395,17 @@
     //    [_plusButtonsViewMain setDescriptionsLayerShadowOffset:CGSizeMake(0.f, 1.f)];
     //    [_plusButtonsViewMain setDescriptionsLayerCornerRadius:6.f forOrientation:LGPlusButtonsViewOrientationAll];
     //    [_plusButtonsViewMain setDescriptionsContentEdgeInsets:UIEdgeInsetsMake(4.f, 8.f, 4.f, 8.f) forOrientation:LGPlusButtonsViewOrientationAll];
-
+    
     //    for (NSUInteger i=1; i<=3; i++)
     //        [_plusButtonsViewMain setButtonAtIndex:i offset:CGPointMake(-6.f, 0.f)
     //                                forOrientation:(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? LGPlusButtonsViewOrientationPortrait : LGPlusButtonsViewOrientationAll)];
-
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
         [_plusButtonsViewMain setButtonAtIndex:0 titleOffset:CGPointMake(0.f, -2.f) forOrientation:LGPlusButtonsViewOrientationLandscape];
         [_plusButtonsViewMain setButtonAtIndex:0 titleFont:[UIFont systemFontOfSize:32.f] forOrientation:LGPlusButtonsViewOrientationLandscape];
     }
-
+    
     [self.view addSubview:_plusButtonsViewMain];
 }
 

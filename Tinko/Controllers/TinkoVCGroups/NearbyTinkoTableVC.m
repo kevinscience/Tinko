@@ -130,7 +130,7 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
         cell = (TinkoCell *)[nib objectAtIndex:0];
     }
-    [cell setCellData:_meetsArray[indexPath.row]];
+    [cell setCellData:_meetsArray[indexPath.row] withUser:nil];
     return cell;
 }
 

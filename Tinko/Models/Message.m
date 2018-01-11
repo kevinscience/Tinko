@@ -11,7 +11,7 @@
 
 @implementation Message
 
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary withUser:(User*)user
 {
     self = [super init];
     if (self)
@@ -21,20 +21,8 @@
         self.text = dictionary[@"text"];
         self.postTime = dictionary[@"postTime"];
         
-        FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:_facebookId];
-        [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-            if (snapshot.exists) {
-                //NSLog(@"Document data: %@", snapshot.data);
-                NSDictionary *dic = snapshot.data;
-                self.username = dic[@"username"];
-                self.photoURL = dic[@"photoURL"];
-                
-            } else {
-                NSLog(@"Document does not exist");
-                self.username = @"NOT EXIST";
-                self.photoURL = @"";
-            }
-        }];
+        self.username = user.username;
+        self.photoURL = user.photoURL;
     }
     
     return self;

@@ -27,8 +27,12 @@
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property NSMutableArray *meetsArray;
 @property NSMutableArray *meetsIdArray;
+@property NSMutableArray *meetsMarkerArray;
+@property NSMutableArray *meetsUserArray;
 @property NSMutableDictionary *selectedMeet;
-@property GMSMarker *selectedMarker;
+@property GFCircleQuery *circleQuery;
+@property GFRegionQuery *regionQuery;
+//@property GMSMarker *selectedMarker;
 @end
 
 @implementation NearbyTinkoMapsVC {
@@ -42,8 +46,10 @@
     _table.dataSource = self;
     _meetsArray = [[NSMutableArray alloc] init];
     _meetsIdArray = [[NSMutableArray alloc] init];
+    _meetsMarkerArray = [[NSMutableArray alloc] init];
+    _meetsUserArray = [[NSMutableArray alloc] init];
     _selectedMeet = [[NSMutableDictionary alloc] init];
-    _selectedMarker = [[GMSMarker alloc] init];
+    //_selectedMarker = [[GMSMarker alloc] init];
     
     
     
@@ -61,13 +67,23 @@
     _researchButton.hidden = YES;
     
     
-    
-//    _drawerImage.frame = CGRectMake(0, self.view.frame.size.height-283, self.view.frame.size.width, 33);
-//    _swipedOnImage = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeOnImageActivity:)];
-//    [_drawerImage addGestureRecognizer:_swipedOnImage];
-//    [_drawerImage setUserInteractionEnabled:YES];
+
 //
-    _table.frame = CGRectMake(0, self.view.frame.size.height-250, self.view.frame.size.width, 250);
+    CGFloat bottomPadding;
+    if (@available(iOS 11.0, *)) {
+        UIWindow *window = UIApplication.sharedApplication.keyWindow;
+        bottomPadding = window.safeAreaInsets.bottom;
+    } else {
+        bottomPadding = 0;
+    }
+    CGFloat tabbarHeight = self.tabBarController.tabBar.frame.size.height;
+    CGFloat minimumTableViewHeight = 157 + tabbarHeight + 40;
+    //NSLog(@"viewdidload: tabbarheight: %f, bottomPadding: %f", tabbarHeight, bottomPadding);
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    CGFloat screenHeight = screenRect.size.height;
+    
+    _table.frame = CGRectMake(0, screenHeight-minimumTableViewHeight, self.view.frame.size.width, minimumTableViewHeight);
     _swipedOnTableView = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeOnTableViewActivity:)];
     _swipedOnTableView.delegate = self;
     [_table addGestureRecognizer:_swipedOnTableView];
@@ -129,6 +145,10 @@
     
     NSInteger index = [_meetsIdArray indexOfObject:key];
     NSLog(@"marker userdata: %@, index: %ld", key, (long)index);
+//    GMSMarker *markerIndex = [_meetsMarkerArray objectAtIndex:index];
+//    _mapView.selectedMarker = markerIndex;
+    
+    //[_meetsMarkerArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
     [_meetsIdArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
     [_meetsArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
     [self.table reloadData];
@@ -140,22 +160,28 @@
     [_meetsArray removeAllObjects];
     [_meetsIdArray removeAllObjects];
     
+    _circleQuery.removeAllObservers;
+    _regionQuery.removeAllObservers;
+    
     
     self.dbRef = [[FIRDatabase database] reference];
     GeoFire *geoFire = [[GeoFire alloc] initWithFirebaseRef:[_dbRef child:@"Meets"]];
+    
+    
 
     double lat = _mapView.camera.target.latitude;
     double lon = _mapView.camera.target.longitude;
     CLLocation *center = [[CLLocation alloc] initWithLatitude:lat longitude:lon];
      //Query locations at [37.7832889, -122.4056973] with a radius of 600 meters
-    GFCircleQuery *circleQuery = [geoFire queryAtLocation:center withRadius:11];
+    _circleQuery = [geoFire queryAtLocation:center withRadius:11];
     float zoomlevel = _mapView.camera.zoom;
    
     GMSVisibleRegion visibleRegion = _mapView.projection.visibleRegion;
     MKCoordinateRegion region = [self convertGMSVisibleRegionToMKCoordinateRegion:visibleRegion];
-    GFRegionQuery *regionQuery = [geoFire queryWithRegion:region];
-    FIRDatabaseHandle queryHandle = [zoomlevel>11.07?regionQuery:circleQuery observeEventType:GFEventTypeKeyEntered withBlock:^(NSString *key, CLLocation *location) {
-        NSLog(@"Key '%@' entered the search area and is at location '%@'", key, location);
+    _regionQuery = [geoFire queryWithRegion:region];
+    
+    FIRDatabaseHandle queryHandle = [zoomlevel>11.07?_regionQuery:_circleQuery observeEventType:GFEventTypeKeyEntered withBlock:^(NSString *key, CLLocation *location) {
+       // NSLog(@"Key '%@' entered the search area and is at location '%@'", key, location);
         CLLocationCoordinate2D loc = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
         
         
@@ -172,9 +198,38 @@
                 marker.userData = key;
                 marker.map = _mapView;
                 
-                [_meetsIdArray addObject:key];
-                [_meetsArray addObject:meet];
-                [self.table reloadData];
+                NSString *creatorFacebookId = meet.creatorFacebookId;
+                FIRDocumentReference *userRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+                [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                    User *user;
+                    if (snapshot != nil) {
+                        //NSLog(@"Document data: %@", snapshot.data);
+                        user = [[User alloc] initWithDictionary:snapshot.data];
+                        
+                    } else {
+                        NSLog(@"Document does not exist");
+                        user = [[User alloc] init];
+                    }
+                    
+                    
+                    if(_meetsIdArray.count == 0){
+                        _mapView.selectedMarker = marker;
+                        //marker.icon = [GMSMarker markerImageWithColor:[UIColor greenColor]];
+                        [_meetsIdArray addObject:key];
+                        [_meetsArray addObject:meet];
+                        [_meetsUserArray addObject:user];
+                        //[_meetsMarkerArray addObject:marker];
+                    } else {
+                        [_meetsIdArray insertObject:key atIndex:1];
+                        [_meetsArray insertObject:meet atIndex:1];
+                        [_meetsUserArray insertObject:user atIndex:1];
+                        //[_meetsMarkerArray insertObject:marker atIndex:1];
+                    }
+                    
+                    [self.table reloadData];
+                    
+                    
+                }];
                 
             } else {
                 NSLog(@"Document does not exist: %@", key);
@@ -238,12 +293,22 @@
     }
     
     if (sender.state == UIGestureRecognizerStateEnded){
+        CGFloat bottomPadding;
+        if (@available(iOS 11.0, *)) {
+            UIWindow *window = UIApplication.sharedApplication.keyWindow;
+            bottomPadding = window.safeAreaInsets.bottom;
+        } else {
+            bottomPadding = 0;
+        }
+        CGFloat tabbarHeight = self.tabBarController.tabBar.frame.size.height;
+        CGFloat minimumTableViewHeight = 157 + tabbarHeight;
+        //NSLog(@"gesturerecognizer: tabbarheight: %f, bottomPadding: %f", tabbarHeight, bottomPadding);
         CGFloat velocityY = (0.2*[sender velocityInView:self.view].y);
         CGFloat finalY = _drawerOriginalOriginY + translation.y + velocityY;
-        if(finalY>self.view.frame.size.height-207){
-            finalY = self.view.frame.size.height-207;
-        } else if (finalY < self.view.frame.size.height - 124*_meetsArray.count - 33 - 60){
-            finalY = self.view.frame.size.height - 124*_meetsArray.count - 33 - 60;
+        if(finalY>self.view.frame.size.height- minimumTableViewHeight){
+            finalY = self.view.frame.size.height-minimumTableViewHeight;
+        } else if (finalY < self.view.frame.size.height - 124*_meetsArray.count - 33 - tabbarHeight - 40){
+            finalY = self.view.frame.size.height - 124*_meetsArray.count - 33 - tabbarHeight - 40;
         }
         CGFloat animationDuration = (ABS(velocityY)*0.0002)+0.2;
         NSLog(@"the duration is: %f", animationDuration);
@@ -291,7 +356,7 @@
             cell = (TinkoCell *)[nib objectAtIndex:0];
         }
         if(_meetsArray.count > 0 && _meetsArray.count > indexPath.row-1){
-            [cell setCellData:_meetsArray[indexPath.row-1]];
+            [cell setCellData:_meetsArray[indexPath.row-1] withUser:_meetsUserArray[indexPath.row-1]];
         }
         
         

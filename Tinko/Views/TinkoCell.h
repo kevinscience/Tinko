@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Meet.h"
+#import "User.h"
 
 @interface TinkoCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *profileImage;
@@ -15,5 +16,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *time;
 @property (weak, nonatomic) IBOutlet UILabel *placeName;
-- (void)setCellData:(Meet *)meet;
+- (void)setCellData:(Meet *)meet withUser:(User *)user;
 @end

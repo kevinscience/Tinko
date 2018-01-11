@@ -189,6 +189,10 @@
     [super viewDidAppear:animated];
 }
 
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+}
+
 
 #pragma mark - Example's Configuration
 
@@ -217,8 +221,26 @@
         } else {
             for (FIRDocumentChange *diff in snapshot.documentChanges) {
                 if (diff.type == FIRDocumentChangeTypeAdded) {
-                    Message *message = [[Message alloc] initWithFullDataDictionary:diff.document.data];
-                    [self.messages insertObject:message atIndex:0];
+                    NSDictionary *messageDic = diff.document.data;
+                    NSString *userFacebookId = messageDic[@"facebookId"];
+                    
+                    FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:userFacebookId];
+                    [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+                        User *user;
+                        if (snapshot != nil) {
+                            //NSLog(@"Document data: %@", snapshot.data);
+                            user = [[User alloc] initWithDictionary:snapshot.data];
+                            
+                        } else {
+                            NSLog(@"Document does not exist");
+                            user = [[User alloc] init];
+                        }
+                        Message *message = [[Message alloc] initWithDictionary:messageDic withUser:user];
+                        [self.messages insertObject:message atIndex:0];
+                        [self.tableView reloadData];
+                    }];
+                    
+                    
                     
                 }
                 if (diff.type == FIRDocumentChangeTypeModified) {

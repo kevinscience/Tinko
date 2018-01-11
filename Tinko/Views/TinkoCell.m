@@ -18,7 +18,7 @@
     // Initialization code
 }
 
-- (void)setCellData:(Meet *)meet
+- (void)setCellData:(Meet *)meet withUser:(User *)user
 {
     NSString *facebookId = meet.creatorFacebookId;
     
@@ -29,22 +29,10 @@
     self.time.text=[NSString stringWithFormat:@"%@",[formatter stringFromDate: startTime]];
     _placeName.text = meet.placeName;
     
-    
-    FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId];
-    [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-        if (snapshot.exists) {
-            //NSLog(@"Document data: %@", snapshot.data);
-            NSDictionary *dic = snapshot.data;
-            [self.creatorName setText: dic[@"username"]];
-            [self.profileImage sd_setImageWithURL:[NSURL URLWithString:dic[@"photoURL"]]
-                                 placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
-                                          options:SDWebImageRefreshCached];
-        } else {
-            NSLog(@"Document does not exist");
-            [self.creatorName setText:@"USERNAME"];
-            
-        }
-    }];
+    [self.creatorName setText:user.username];
+    [self.profileImage sd_setImageWithURL:[NSURL URLWithString:user.photoURL]
+                         placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                                  options:SDWebImageRefreshCached];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

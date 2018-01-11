@@ -11,12 +11,14 @@
 #import "FriendsListTableViewCell.h"
 #import "TempVC.h"
 #import "User.h"
+#import "ThisUser.h"
 #import "ProfileUpdateTableVC.h"
 @import Firebase;
 
 @interface MeVC ()
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property NSMutableArray *friendsListArray;
+@property User *theUser;
 @end
 
 @implementation MeVC
@@ -35,6 +37,25 @@
     _friendsListArray = [[NSMutableArray alloc] init];
     
     NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    
+    FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId];
+    [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+        if (snapshot.exists) {
+            //NSLog(@"Document data: %@", snapshot.data);
+            NSDictionary *dic = snapshot.data;
+            _theUser = [[User alloc] initWithDictionary:dic];
+            ThisUser *thisUser = [ThisUser thisUser];
+            [thisUser setUser:_theUser];
+        } else {
+            NSLog(@"Document does not exist");
+            _theUser = [[User alloc] init];
+        }
+        NSRange range = NSMakeRange(0, 1);
+        NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+        [self.table reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+    }];
+    
+    
     [[FIRFirestore.firestore collectionWithPath:[NSString stringWithFormat:@"Users/%@/Friends_List", facebookId]]
      getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
          if (error != nil) {
@@ -68,7 +89,7 @@
                 NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"ProfileTableViewCell" owner:self options:nil];
                 cell = (ProfileTableViewCell *)[nib objectAtIndex:0];
             }
-            [cell setCellData];
+            [cell setCellDataWithUser:_theUser];
             return cell;
         } else{
             FriendsListTableViewCell *cell = nil;

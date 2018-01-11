@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "User.h"
 
 @interface ProfileTableViewCell : UITableViewCell
 
-- (void)setCellData;
+- (void)setCellDataWithUser:(User*)user;
 
 @end

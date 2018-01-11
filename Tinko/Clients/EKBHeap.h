@@ -10,6 +10,6 @@
 
 @interface EKBHeap : NSObject
 
-NSDictionary* heapSort(NSMutableArray* meetsArray, NSMutableArray* meetsIdArray);
+NSDictionary* heapSort(NSMutableArray* meetsArray, NSMutableArray* meetsIdArray, NSMutableArray* C);
 
 @end
