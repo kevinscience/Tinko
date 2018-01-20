@@ -10,7 +10,8 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "LoginVC.h"
+#import <CoreData/CoreData.h>
 
-@interface MeVC : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface MeVC : UIViewController <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
 
 @end

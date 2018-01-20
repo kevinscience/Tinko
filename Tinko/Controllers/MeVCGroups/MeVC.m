@@ -13,12 +13,17 @@
 #import "User.h"
 #import "ThisUser.h"
 #import "ProfileUpdateTableVC.h"
+#import "AppDelegate.h"
+#import "CDUser.h"
 @import Firebase;
 
 @interface MeVC ()
 @property (weak, nonatomic) IBOutlet UITableView *table;
 @property NSMutableArray *friendsListArray;
 @property User *theUser;
+@property(weak, nonatomic)NSPersistentContainer *container;
+@property(weak, nonatomic)NSManagedObjectContext *context;
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @end
 
 @implementation MeVC
@@ -33,6 +38,12 @@
    
     _table.delegate = self;
     _table.dataSource = self;
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    _container = appDelegate.persistentContainer;
+    _context = _container.viewContext;
+    [_context setMergePolicy:NSOverwriteMergePolicy];
+    [self initializeFetchedResultsController];
     
     _friendsListArray = [[NSMutableArray alloc] init];
     
@@ -65,9 +76,17 @@
              for (FIRDocumentSnapshot *document in snapshot.documents) {
                  //NSLog(@"%@ => %@", document.documentID, document.data);
                  User *user = [[User alloc] initWithDictionary:document.data];
-                 [_friendsListArray addObject:user];
+                 //[_friendsListArray addObject:user];
+                 [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
+                 NSError *error = nil;
+                 if ([_context hasChanges] && ![_context save:&error]) {
+                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                     abort();
+                 }
+                 
+                 
              }
-             NSLog(@"friendsListArray: %@", _friendsListArray);
+             [self initializeFetchedResultsController];
              NSRange range = NSMakeRange(1, 1);
              NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
              [self.table reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
@@ -110,7 +129,10 @@
             NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"FriendsListTableViewCell" owner:self options:nil];
             cell = (FriendsListTableViewCell *)[nib objectAtIndex:0];
         }
-        [cell setCellData:_friendsListArray[indexPath.row]];
+        
+        NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+        CDUser *cdUser = [self.fetchedResultsController objectAtIndexPath:customIndexPath];
+        [cell setCellDataWithFriend:cdUser];
         return cell;
     }
     
@@ -118,12 +140,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    
+    
     if(section==0){
-        return 2;
+        return 4;
     } else{
-        return _friendsListArray.count;
-        //return 5;
-    }
+        id< NSFetchedResultsSectionInfo> sectionInfo = [[self fetchedResultsController] sections][0];
+        return [sectionInfo numberOfObjects];    }
     
 }
 
@@ -151,6 +174,76 @@
     }
     return height;
 }
+
+
+- (void)initializeFetchedResultsController
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDUser"];
+    
+    NSSortDescriptor *lastNameSort = [NSSortDescriptor sortDescriptorWithKey:@"username" ascending:YES];
+    
+    [request setSortDescriptors:@[lastNameSort]];
+    
+    [self setFetchedResultsController:[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_context sectionNameKeyPath:nil cacheName:nil]];
+    self.fetchedResultsController.delegate = self;
+    
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        NSLog(@"Failed to initialize FetchedResultsController: %@\n%@", [error localizedDescription], [error userInfo]);
+        abort();
+    }
+}
+
+
+//#pragma mark - NSFetchedResultsControllerDelegate
+//- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+//{
+//    NSLog(@"controllerwillchangeContent");
+//    [self.table beginUpdates];
+//}
+//- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+//{
+//    NSLog(@"controllerdidchangesection");
+//    switch(type) {
+//        case NSFetchedResultsChangeInsert:
+//            [self.table insertSections:[NSIndexSet indexSetWithIndex:sectionIndex-1] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//        case NSFetchedResultsChangeDelete:
+//            [self.table deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex-1] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//        case NSFetchedResultsChangeMove:
+//        case NSFetchedResultsChangeUpdate:
+//            break;
+//    }
+//}
+//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+//{
+//    NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
+//    NSIndexPath *customNewIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:newIndexPath.section-1];
+//    NSLog(@"controllerwilldidchangeObject");
+//    switch(type) {
+//        case NSFetchedResultsChangeInsert:
+//            [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//        case NSFetchedResultsChangeDelete:
+//            [self.table deleteRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//        case NSFetchedResultsChangeUpdate:
+//            [self.table reloadRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//        case NSFetchedResultsChangeMove:
+//            [self.table deleteRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            break;
+//    }
+//}
+//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+//{
+//    NSLog(@"controllerdidchangecontent");
+//    [self.table endUpdates];
+//}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

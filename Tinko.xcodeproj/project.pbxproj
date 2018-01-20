@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3EDEC291BC39D4779DA17C83 /* libPods-Tinko.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86929806ECD928830385DC40 /* libPods-Tinko.a */; };
 		411A886A20037901002A5FA0 /* NSDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 411A886920037901002A5FA0 /* NSDictionary.m */; };
+		411A886D200E9132002A5FA0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 411A886B200E9130002A5FA0 /* Model.xcdatamodeld */; };
 		411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */; };
 		419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AC1FE9D2B6001FBF82 /* AppDelegate.m */; };
 		419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AF1FE9D2B6001FBF82 /* LoginVC.m */; };
@@ -55,6 +56,7 @@
 		41AAD90A1FF9774B0020532B /* ThisUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD9091FF9774B0020532B /* ThisUser.m */; };
 		41AAD90D1FF978410020532B /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD90C1FF978410020532B /* User.m */; };
 		41AD75E22001E6EC006C2CA3 /* WebClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AD75E12001E6EC006C2CA3 /* WebClient.m */; };
+		41BF7AF82011752300360778 /* CDUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 41BF7AF62011752200360778 /* CDUser.m */; };
 		84F491EDD68AC802B16356FD /* libPods-TinkoUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C821D3FA0E52C89CBCE43D0E /* libPods-TinkoUITests.a */; };
 		AA4885207454EDCCDB166607 /* libPods-TinkoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3020BAC9277E3C84B4B3708A /* libPods-TinkoTests.a */; };
 /* End PBXBuildFile section */
@@ -81,6 +83,7 @@
 		3020BAC9277E3C84B4B3708A /* libPods-TinkoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TinkoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		411A886820037901002A5FA0 /* NSDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionary.h; sourceTree = "<group>"; };
 		411A886920037901002A5FA0 /* NSDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionary.m; sourceTree = "<group>"; };
+		411A886C200E9130002A5FA0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		411F7A5E1FFED58C00B8AD0C /* NearbyTinkoMapsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyTinkoMapsVC.h; sourceTree = "<group>"; };
 		411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyTinkoMapsVC.m; sourceTree = "<group>"; };
 		419011A81FE9D2B6001FBF82 /* Tinko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinko.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,6 +166,8 @@
 		41AAD90C1FF978410020532B /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		41AD75E02001E6EC006C2CA3 /* WebClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebClient.h; sourceTree = "<group>"; };
 		41AD75E12001E6EC006C2CA3 /* WebClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebClient.m; sourceTree = "<group>"; };
+		41BF7AF62011752200360778 /* CDUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDUser.m; sourceTree = "<group>"; };
+		41BF7AF72011752200360778 /* CDUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDUser.h; sourceTree = "<group>"; };
 		65F7EEF15018A7FF1AC4B8A0 /* Pods-TinkoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TinkoUITests/Pods-TinkoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D39E2ADB44701D2F4F468F7 /* Pods-TinkoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TinkoUITests/Pods-TinkoUITests.release.xcconfig"; sourceTree = "<group>"; };
 		76C193224EC9685852944812 /* Pods-Tinko.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinko.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tinko/Pods-Tinko.debug.xcconfig"; sourceTree = "<group>"; };
@@ -391,6 +396,8 @@
 		41AAD8CC1FF1C5320020532B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				41BF7AF72011752200360778 /* CDUser.h */,
+				41BF7AF62011752200360778 /* CDUser.m */,
 				41AAD8EE1FF88A7D0020532B /* Message.h */,
 				41AAD8EF1FF88A7D0020532B /* Message.m */,
 				41AAD8CD1FF1C5750020532B /* Meet.m */,
@@ -403,6 +410,7 @@
 				41AAD90C1FF978410020532B /* User.m */,
 				411A886820037901002A5FA0 /* NSDictionary.h */,
 				411A886920037901002A5FA0 /* NSDictionary.m */,
+				411A886B200E9130002A5FA0 /* Model.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -737,6 +745,7 @@
 				41AAD8D91FF69BCB0020532B /* TinkoDisplayRootVC.m in Sources */,
 				41AAD87A1FEB72840020532B /* FriendsListTableViewCell.m in Sources */,
 				411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */,
+				411A886D200E9132002A5FA0 /* Model.xcdatamodeld in Sources */,
 				41AAD8A51FEF631C0020532B /* NearbyTinkoTableVC.m in Sources */,
 				41AAD8CE1FF1C5750020532B /* Meet.m in Sources */,
 				41AAD8EC1FF889F20020532B /* MessageTextView.m in Sources */,
@@ -745,6 +754,7 @@
 				419011BB1FE9D2B6001FBF82 /* main.m in Sources */,
 				41AAD90D1FF978410020532B /* User.m in Sources */,
 				41AAD90A1FF9774B0020532B /* ThisUser.m in Sources */,
+				41BF7AF82011752300360778 /* CDUser.m in Sources */,
 				41AAD8931FEDCBC40020532B /* InvitationRangeOptionTVC.m in Sources */,
 				41AAD8821FEC5BAB0020532B /* MainTabBarVC.m in Sources */,
 				41AD75E22001E6EC006C2CA3 /* WebClient.m in Sources */,
@@ -1045,6 +1055,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		411A886B200E9130002A5FA0 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				411A886C200E9130002A5FA0 /* Model.xcdatamodel */,
+			);
+			currentVersion = 411A886C200E9130002A5FA0 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 419011A01FE9D2B6001FBF82 /* Project object */;
 }

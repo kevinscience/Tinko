@@ -35,6 +35,15 @@
     
 }
 
+- (void)setCellDataWithFriend:(CDUser *)cdUser{
+    [self.header setText: cdUser.username];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cdUser.photoUrl]
+                  placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                           options:SDWebImageRefreshCached];
+}
+
+
+
 -(void)setInvitationCellData{
     [self.header setText:@"Invite Friends"];
     [self.image setImage:[UIImage imageNamed:@"inviteIcon"]];
