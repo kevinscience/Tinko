@@ -37,4 +37,15 @@
 //    self.image.clipsToBounds = YES;
 }
 
+- (void)setCellDataWithCDUser:(CDUser*)cdUser
+{
+    [self.header setText: cdUser.username];
+    [self.body setText: cdUser.facebookId];
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cdUser.photoUrl]
+                  placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                           options:SDWebImageRefreshCached];
+    [self.body setTextColor:[UIColor colorWithRed:74/255.0 green:74/255.0 blue:74/255.0 alpha:1.0]];
+}
+
+
 @end

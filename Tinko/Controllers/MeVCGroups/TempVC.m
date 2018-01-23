@@ -12,6 +12,7 @@
 #import "LoginVC.h"
 #import "WebClient.h"
 #import "NSDictionary.h"
+#import <Crashlytics/Crashlytics.h>
 @import Firebase;
 
 @interface TempVC ()
@@ -49,7 +50,17 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:-50.0]];
     
-    
+    UIButton* button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    button.frame = CGRectMake(20, 50, 100, 30);
+    [button setTitle:@"Crash" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(crashButtonTapped:)
+     forControlEvents:UIControlEventTouchUpInside];
+    button.center = CGPointMake(40, 150);
+    [self.view addSubview:button];
+}
+
+- (IBAction)crashButtonTapped:(id)sender {
+    [[Crashlytics sharedInstance] crash];
 }
 
 - (void) loginButtonDidLogOut:(FBSDKLoginButton *)loginButton{

@@ -15,6 +15,8 @@
 #import "ProfileUpdateTableVC.h"
 #import "AppDelegate.h"
 #import "CDUser.h"
+#import "FriendDetailTVC.h"
+#import "NewFriendsRequest.h"
 @import Firebase;
 
 @interface MeVC ()
@@ -24,6 +26,7 @@
 @property(weak, nonatomic)NSPersistentContainer *container;
 @property(weak, nonatomic)NSManagedObjectContext *context;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+@property NSString *facebookId;
 @end
 
 @implementation MeVC
@@ -47,9 +50,9 @@
     
     _friendsListArray = [[NSMutableArray alloc] init];
     
-    NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
     
-    FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId];
+    FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:_facebookId];
     [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if (snapshot.exists) {
             //NSLog(@"Document data: %@", snapshot.data);
@@ -57,6 +60,13 @@
             _theUser = [[User alloc] initWithDictionary:dic];
             ThisUser *thisUser = [ThisUser thisUser];
             [thisUser setUser:_theUser];
+            //Save to Core Data
+            [CDUser createOrUpdateCDUserWithUser:_theUser withContext:_context];
+            NSError *error = nil;
+            if ([_context hasChanges] && ![_context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                abort();
+            }
         } else {
             NSLog(@"Document does not exist");
             _theUser = [[User alloc] init];
@@ -67,7 +77,7 @@
     }];
     
     
-    [[FIRFirestore.firestore collectionWithPath:[NSString stringWithFormat:@"Users/%@/Friends_List", facebookId]]
+    [[FIRFirestore.firestore collectionWithPath:[NSString stringWithFormat:@"Users/%@/Friends_List", _facebookId]]
      getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
          if (error != nil) {
              NSLog(@"Error getting documents: %@", error);
@@ -75,24 +85,35 @@
              //NSLog(@"DOCUMENTS: %@", snapshot.documents);
              for (FIRDocumentSnapshot *document in snapshot.documents) {
                  //NSLog(@"%@ => %@", document.documentID, document.data);
-                 User *user = [[User alloc] initWithDictionary:document.data];
-                 //[_friendsListArray addObject:user];
-                 [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
-                 NSError *error = nil;
-                 if ([_context hasChanges] && ![_context save:&error]) {
-                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                     abort();
-                 }
-                 
-                 
+                 NSString *userFacebookId = document.documentID;
+                 //NSLog(@"userFacebookId: %@", userFacebookId);
+                 FIRDocumentReference *userDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:userFacebookId];
+                 [userDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+                     if (snapshot.exists) {
+                         //NSLog(@"myDocRef Document data: %@", snapshot.data);
+                         NSDictionary *dic = snapshot.data;
+                         User *user = [[User alloc] initWithDictionary:dic];
+                         [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
+                         NSError *error = nil;
+                         if ([_context hasChanges] && ![_context save:&error]) {
+                             NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                             abort();
+                         }
+                     } else {
+                         NSLog(@"Document does not exist");
+                     }
+                     [self initializeFetchedResultsController];
+                     NSRange range = NSMakeRange(1, 1);
+                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+                     [self.table reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+                     
+                 }];
              }
-             [self initializeFetchedResultsController];
-             NSRange range = NSMakeRange(1, 1);
-             NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-             [self.table reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+             
          }
      }];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewFriendsRequest:) name:@"NewFriendsRequestNotification" object:nil];
 }
 
 
@@ -108,16 +129,48 @@
                 NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"ProfileTableViewCell" owner:self options:nil];
                 cell = (ProfileTableViewCell *)[nib objectAtIndex:0];
             }
-            [cell setCellDataWithUser:_theUser];
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"CDUser"];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"facebookId == %@", _facebookId]];
+            NSError *error = nil;
+            NSArray *array = [_context executeFetchRequest:fetchRequest error:&error];
+            CDUser *cdUser = [array firstObject];
+            [cell setCellDataWithCDUser:cdUser];
+            //[cell setCellDataWithUser:_theUser];
             return cell;
-        } else{
+        } else if (indexPath.row == 1){
             FriendsListTableViewCell *cell = nil;
             if (cell == nil)
             {
                 NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"FriendsListTableViewCell" owner:self options:nil];
                 cell = (FriendsListTableViewCell *)[nib objectAtIndex:0];
             }
-            [cell setInvitationCellData];
+            [cell setCustomCellDataWithTitle:@"Invite Friends" withImageName:@"inviteIcon"];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            return cell;
+        }  else if (indexPath.row == 2){
+            FriendsListTableViewCell *cell = nil;
+            if (cell == nil)
+            {
+                NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"FriendsListTableViewCell" owner:self options:nil];
+                cell = (FriendsListTableViewCell *)[nib objectAtIndex:0];
+            }
+            [cell setCustomCellDataWithTitle:@"History Tinko" withImageName:@"history"];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            return cell;
+        }  else{
+            FriendsListTableViewCell *cell = nil;
+            if (cell == nil)
+            {
+                NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"FriendsListTableViewCell" owner:self options:nil];
+                cell = (FriendsListTableViewCell *)[nib objectAtIndex:0];
+            }
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"NewFriendsRequest"];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"read == %@", [NSNumber numberWithBool:NO]]];
+            NSError *error = nil;
+            NSInteger count = [_context countForFetchRequest:fetchRequest error:&error];
+            
+            NSString *imageName = count == 0 ? @"newfriends" : @"newFriendsWithDot";
+            [cell setCustomCellDataWithTitle:@"New Friends" withImageName:imageName];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             return cell;
         }
@@ -155,9 +208,31 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(indexPath.section == 0 && indexPath.row == 0){
-        ProfileUpdateTableVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileUpdateTableVCID"];
-        //MessageViewController *secondView = [MessageViewController new];
+    if(indexPath.section == 0){
+        if(indexPath.row == 0){
+            ProfileUpdateTableVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileUpdateTableVCID"];
+            //MessageViewController *secondView = [MessageViewController new];
+            secondView.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController: secondView animated:YES];
+        } else if(indexPath.row == 1){
+            
+        } else if(indexPath.row == 2){
+            
+        } else if(indexPath.row == 3){
+            UITabBarItem *tabBarItemMe = [self.tabBarController.tabBar.items objectAtIndex:2];
+            [tabBarItemMe setBadgeValue:nil];
+            FriendsListTableViewCell *cell = [_table cellForRowAtIndexPath:indexPath];
+            [cell.image setImage:[UIImage imageNamed:@"newfriends"]];
+        }
+        
+    } else if( indexPath.section == 1){
+        NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:0];
+        CDUser *cdUser = [self.fetchedResultsController objectAtIndexPath:customIndexPath];
+        
+        FriendDetailTVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"FriendDetailTVCID"];
+        secondView.showingUserFacebookId = cdUser.facebookId;
+        secondView.cdUser = cdUser;
+        secondView.isCDUser = YES;
         secondView.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController: secondView animated:YES];
     }
@@ -178,14 +253,15 @@
 
 - (void)initializeFetchedResultsController
 {
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDUser"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"NOT (facebookId == %@)", _facebookId]];
+    NSSortDescriptor *usernameSort = [NSSortDescriptor sortDescriptorWithKey:@"username" ascending:YES];
     
-    NSSortDescriptor *lastNameSort = [NSSortDescriptor sortDescriptorWithKey:@"username" ascending:YES];
-    
-    [request setSortDescriptors:@[lastNameSort]];
+    [request setSortDescriptors:@[usernameSort]];
     
     [self setFetchedResultsController:[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_context sectionNameKeyPath:nil cacheName:nil]];
-    self.fetchedResultsController.delegate = self;
+    //self.fetchedResultsController.delegate = self;
     
     NSError *error = nil;
     if (![[self fetchedResultsController] performFetch:&error]) {
@@ -194,6 +270,12 @@
     }
 }
 
+-(void)receiveNewFriendsRequest:(NSNotification *) notification{
+    NSLog(@"MeVC: receoveMewFriendsRequest");
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:3 inSection:0];
+    FriendsListTableViewCell *cell = [_table cellForRowAtIndexPath:indexPath];
+    [cell.image setImage:[UIImage imageNamed:@"newFriendsWithDot"]];
+}
 
 //#pragma mark - NSFetchedResultsControllerDelegate
 //- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller

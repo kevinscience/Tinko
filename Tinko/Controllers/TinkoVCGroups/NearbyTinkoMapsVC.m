@@ -142,7 +142,6 @@
 
 -(BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker{
     NSString *key = marker.userData;
-    
     NSInteger index = [_meetsIdArray indexOfObject:key];
     NSLog(@"marker userdata: %@, index: %ld", key, (long)index);
 //    GMSMarker *markerIndex = [_meetsMarkerArray objectAtIndex:index];
@@ -151,9 +150,29 @@
     //[_meetsMarkerArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
     [_meetsIdArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
     [_meetsArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
+    [_meetsUserArray exchangeObjectAtIndex:0 withObjectAtIndex:index];
     [self.table reloadData];
     return NO;
 }
+
+- (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker {
+    NSString *key = marker.userData;
+    NSInteger index = [_meetsIdArray indexOfObject:key];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
+    //TinkoDisccusionVC *secondView = [TinkoDisccusionVC new];
+    secondView.hidesBottomBarWhenPushed = YES;
+    SharedMeet *sharedMeet = [SharedMeet sharedMeet];
+    Meet *meet = _meetsArray[index];
+    [sharedMeet setMeet:meet];
+    [sharedMeet setMeetId:_meetsIdArray[index]];
+    NSLog(@"TinkoTable: %@", meet.title);
+    [self.navigationController pushViewController: secondView animated:YES];
+}
+
+
+
 
 - (void) doGeoFireQuery{
     [_mapView clear];

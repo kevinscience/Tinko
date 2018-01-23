@@ -11,7 +11,9 @@
 #import "Meet.h"
 #import "TinkoCell.h"
 #import "WebClient.h"
-
+#import "ProfileTableViewCell.h"
+#import "User.h"
+#import "FriendDetailTVC.h"
 
 @interface TinkoDetailVC ()
 @property (weak, nonatomic) IBOutlet UITableView *table;
@@ -20,6 +22,7 @@
 @property (nonatomic, strong) WebClient *client;
 @property NSString *facebookId;
 @property BOOL participating;
+@property User *creatorUser;
 @end
 
 //Fetch New Meet Data in ViewDIdLoad and apply to table
@@ -38,10 +41,24 @@
     NSArray *participatedUsersList = _meet.participatedUsersList;
     _participating = [participatedUsersList containsObject:_facebookId];
     // Do any additional setup after loading the view from its nib.
+    
+    NSString *creatorFacebookId = _meet.creatorFacebookId;
+    FIRDocumentReference *creatorDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+    [creatorDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+        if (snapshot.exists) {
+            //NSLog(@"Document data: %@", snapshot.data);
+            NSDictionary *dic = snapshot.data;
+            _creatorUser = [[User alloc] initWithDictionary:dic];
+        } else {
+            NSLog(@"Document does not exist");
+            _creatorUser = [[User alloc] init];
+        }
+        [self.table reloadData];
+    }];
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    return 3;
     
 }
 
@@ -57,10 +74,21 @@
             NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
             cell = (TinkoCell *)[nib objectAtIndex:0];
         }
-        [cell setCellData:_meet withUser:nil];
+        [cell setCellData:_meet withUser:_creatorUser ];
         
         
         
+        return cell;
+    } else if (indexPath.row == 1) {
+        ProfileTableViewCell *cell = nil;
+        if (cell == nil)
+        {
+            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"ProfileTableViewCell" owner:self options:nil];
+            cell = (ProfileTableViewCell *)[nib objectAtIndex:0];
+        }
+        [cell setCellDataWithUser:_creatorUser];
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
         return cell;
     } else {
         static NSString *simpleTableIdentifier = @"cell";
@@ -105,6 +133,19 @@
     
     return 124.0f;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.section == 0 && indexPath.row == 1){
+        FriendDetailTVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"FriendDetailTVCID"];
+        secondView.showingUserFacebookId = _creatorUser.facebookId;
+        secondView.user = _creatorUser;
+        secondView.isCDUser = NO;
+        secondView.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController: secondView animated:YES];
+    }
+    [self.table deselectRowAtIndexPath:indexPath animated:YES];
+}
+
 
 
 #pragma mark - XLPagerTabStripViewControllerDelegate

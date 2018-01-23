@@ -11,9 +11,6 @@
 @import Firebase;
 
 @interface FriendsListTableViewCell ()
-
-@property (weak, nonatomic) IBOutlet UILabel *header;
-@property (weak, nonatomic) IBOutlet UIImageView *image;
 @property NSString *facebookId;
 @end
 
@@ -49,6 +46,10 @@
     [self.image setImage:[UIImage imageNamed:@"inviteIcon"]];
 }
 
+-(void)setCustomCellDataWithTitle:(NSString*)title withImageName:(NSString*)imageName{
+    [self.header setText:title];
+    [self.image setImage:[UIImage imageNamed:imageName]];
+}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

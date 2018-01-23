@@ -66,7 +66,7 @@
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html", nil];
     
-    [manager POST:@"initializeNewUser" parameters:data progress:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+    [manager POST:code parameters:data progress:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         NSLog(@"responseObject: %@", responseObject);
         if(completion) completion();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
