@@ -34,37 +34,7 @@
     _tabBarItemMe = [self.tabBar.items objectAtIndex:2];
     [_tabBarItemMe setImage:[self imageWithImage:[UIImage imageNamed:@"newfriends"] scaledToSize:CGSizeMake(30, 30)]];
     
-    
-    
-    // add snapshot listener for NewFriendsFolder
-    NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
-    FIRCollectionReference *newFriendsRef = [[[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId] collectionWithPath:@"NewFriendsFolder"];
-    [[newFriendsRef queryWhereField:@"read" isEqualTo:@NO] addSnapshotListener:^(FIRQuerySnapshot * _Nullable snapshot, NSError * _Nullable error) {
-        if (snapshot == nil) {
-            NSLog(@"Error fetching documents: %@", error);
-            return;
-        }
-        
-        NSInteger count = snapshot.count;
-        NSLog(@"NewFriendsRequest: count = %ld", (long)count);
-        if(count == 0){
-            return;
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_tabBarItemMe setBadgeValue:@""];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewFriendsRequestNotification" object:self];
-        });
-        for (FIRDocumentSnapshot *document in snapshot.documents) {
-            
-            NSLog(@"MainTabBarVC: NewFriendsRequest:%@", document.data);
-            [NewFriendsRequest createNewFriendsRequestWithDic:document.data withContext:_context];
-            NSError *error = nil;
-            if ([_context hasChanges] && ![_context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                abort();
-            }
-        }
-    }];
+    [self addNewFriendsRequestSnapshotListener];
 }
 
 -(bool) tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
@@ -81,6 +51,45 @@
     }else{
         return YES;
     }
+}
+
+-(void) addNewFriendsRequestSnapshotListener{
+    // add snapshot listener for NewFriendsFolder
+    NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    FIRCollectionReference *newFriendsRef = [[[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:facebookId] collectionWithPath:@"NewFriendsFolder"];
+    [[newFriendsRef queryWhereField:@"read" isEqualTo:@NO] addSnapshotListener:^(FIRQuerySnapshot * _Nullable snapshot, NSError * _Nullable error) {
+        if (snapshot == nil) {
+            NSLog(@"Error fetching documents: %@", error);
+            return;
+        }
+        
+        for (FIRDocumentChange *diff in snapshot.documentChanges) {
+            if (diff.type == FIRDocumentChangeTypeAdded) {
+                [_tabBarItemMe setBadgeValue:@""];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"NewFriendsRequestNotification" object:self];
+                
+                //NSLog(@"MainTabBarVC: NewFriendsRequest:%@", document.data);
+                NSDictionary *requestDic = diff.document.data;
+                NSString *requesterFacebookId = requestDic[@"requester"];
+                
+                FIRDocumentReference *userDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:requesterFacebookId];
+                [userDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+                    if (snapshot.exists) {
+                        //NSLog(@"Document data: %@", snapshot.data);
+                        NSDictionary *userDic = snapshot.data;
+                        [NewFriendsRequest createNewFriendsRequestWithRequestDic:requestDic withUserDic:userDic withContext:_context];
+                        NSError *error = nil;
+                        if ([_context hasChanges] && ![_context save:&error]) {
+                            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                            abort();
+                        }
+                    } else {
+                        NSLog(@"Document does not exist");
+                    }
+                }];
+            }
+        }
+    }];
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {

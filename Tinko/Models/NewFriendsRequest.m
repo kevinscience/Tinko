@@ -13,13 +13,31 @@
 @dynamic requestTime;
 @dynamic type;
 @dynamic read;
+@dynamic requestMessage;
+@dynamic requesterPhotoURL;
+@dynamic requesterUsername;
 
-+(void)createNewFriendsRequestWithDic:(NSDictionary*)dic withContext:(NSManagedObjectContext*)context{
++(void)createNewFriendsRequestWithRequestDic:(NSDictionary*)requestDic withUserDic:(NSDictionary*)userDic withContext:(NSManagedObjectContext*)context{
     NewFriendsRequest *request = [NSEntityDescription insertNewObjectForEntityForName:@"NewFriendsRequest" inManagedObjectContext:context];
-    request.requester = dic[@"requester"];
-    request.requestTime = dic[@"requestTime"];
-    request.type = dic[@"type"];
-    request.read = [[dic objectForKey:@"read"] boolValue];
+    request.requester = requestDic[@"requester"];
+    request.requestTime = requestDic[@"requestTime"];
+    NSNumber *typeNumber = requestDic[@"type"];
+    request.type = [typeNumber integerValue];
+    request.read = [[requestDic objectForKey:@"read"] boolValue];
+    request.requestMessage = requestDic[@"requestMessage"];
     
+    request.requesterPhotoURL = userDic[@"photoURL"];
+    request.requesterUsername = userDic[@"username"];
+}
+
++(void)updateNewFriendsRequestWithRequest:(NewFriendsRequest*)request WithRead:(BOOL)read withType:(NSInteger*)type withContext:(NSManagedObjectContext*)context{
+    request.read = read;
+    request.type = type;
+    
+    NSError *error = nil;
+    if ([context hasChanges] && ![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+        abort();
+    }
 }
 @end

@@ -5,7 +5,7 @@
         <attribute name="facebookId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="photoUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photoURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
         <uniquenessConstraints>
@@ -17,6 +17,9 @@
     <entity name="NewFriendsRequest" representedClassName="NewFriendsRequest" syncable="YES" codeGenerationType="category">
         <attribute name="read" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="requester" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="requesterPhotoURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="requesterUsername" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="requestMessage" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="requestTime" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <uniquenessConstraints>
@@ -27,6 +30,6 @@
     </entity>
     <elements>
         <element name="CDUser" positionX="-63" positionY="-18" width="128" height="148"/>
-        <element name="NewFriendsRequest" positionX="-342" positionY="-18" width="128" height="103"/>
+        <element name="NewFriendsRequest" positionX="-342" positionY="-18" width="128" height="148"/>
     </elements>
 </model>

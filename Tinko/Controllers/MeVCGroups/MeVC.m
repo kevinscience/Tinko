@@ -17,6 +17,7 @@
 #import "CDUser.h"
 #import "FriendDetailTVC.h"
 #import "NewFriendsRequest.h"
+#import "NewFriendsRequestFolder.h"
 @import Firebase;
 
 @interface MeVC ()
@@ -168,7 +169,7 @@
             [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"read == %@", [NSNumber numberWithBool:NO]]];
             NSError *error = nil;
             NSInteger count = [_context countForFetchRequest:fetchRequest error:&error];
-            
+            NSLog(@"MeVC: NewFriends: count = %ld", (long)count);
             NSString *imageName = count == 0 ? @"newfriends" : @"newFriendsWithDot";
             [cell setCustomCellDataWithTitle:@"New Friends" withImageName:imageName];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -211,7 +212,6 @@
     if(indexPath.section == 0){
         if(indexPath.row == 0){
             ProfileUpdateTableVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileUpdateTableVCID"];
-            //MessageViewController *secondView = [MessageViewController new];
             secondView.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController: secondView animated:YES];
         } else if(indexPath.row == 1){
@@ -219,10 +219,17 @@
         } else if(indexPath.row == 2){
             
         } else if(indexPath.row == 3){
-            UITabBarItem *tabBarItemMe = [self.tabBarController.tabBar.items objectAtIndex:2];
-            [tabBarItemMe setBadgeValue:nil];
-            FriendsListTableViewCell *cell = [_table cellForRowAtIndexPath:indexPath];
-            [cell.image setImage:[UIImage imageNamed:@"newfriends"]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UITabBarItem *tabBarItemMe = [self.tabBarController.tabBar.items objectAtIndex:2];
+                [tabBarItemMe setBadgeValue:nil];
+                FriendsListTableViewCell *cell = [_table cellForRowAtIndexPath:indexPath];
+                [cell.image setImage:[UIImage imageNamed:@"newfriends"]];
+            });
+            
+            
+            NewFriendsRequestFolder *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"NewFriendsRequestFolderID"];
+            secondView.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController: secondView animated:YES];
         }
         
     } else if( indexPath.section == 1){

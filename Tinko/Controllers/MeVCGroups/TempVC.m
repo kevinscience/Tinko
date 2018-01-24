@@ -13,10 +13,13 @@
 #import "WebClient.h"
 #import "NSDictionary.h"
 #import <Crashlytics/Crashlytics.h>
+#import "AppDelegate.h"
 @import Firebase;
+@import CoreData;
 
 @interface TempVC ()
-
+@property(weak, nonatomic)NSPersistentContainer *container;
+@property(weak, nonatomic)NSManagedObjectContext *context;
 @end
 
 @implementation TempVC
@@ -33,6 +36,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    _container = appDelegate.persistentContainer;
+    _context = _container.viewContext;
     
     // Do any additional setup after loading the view.
         FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
@@ -73,26 +79,34 @@
     }
     LoginVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginVCID"];
     [self presentViewController: secondView animated:YES completion: nil];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"NewFriendsRequest"];
+    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    
+    NSError *deleteError = nil;
+    [_context executeRequest:delete error:&deleteError];
+    //[myPersistentStoreCoordinator executeRequest:delete withContext:myContext error:&deleteError];
+    
 }
 - (IBAction)testButtonPressed:(id)sender {
-    NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
-    [parameters setValue:@"id,name,email,friends,location,gender" forKey:@"fields"];
-    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-        if(error != nil){
-            NSLog(@"FBSDKGraphRequest Error: %@", error);
-            return;
-        }
-        NSLog(@"result: %@", result);
-        NSDictionary *resultDic = [[NSDictionary alloc] initWithDictionary:result];
-        //NSString *resultJson = [resultDic bv_jsonStringWithPrettyPrint:NO];
-        //NSLog(@"resultJson: %@", resultJson);
-        WebClient *webClient = [[WebClient alloc] init];
-        [webClient postMethodWithCode:@"initializeNewUser" withData:result withCompletion:^{
-
-        } withError:^(NSString *error) {
-
-        }];
-    }];
+//    NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
+//    [parameters setValue:@"id,name,email,friends,location,gender" forKey:@"fields"];
+//    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters] startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+//        if(error != nil){
+//            NSLog(@"FBSDKGraphRequest Error: %@", error);
+//            return;
+//        }
+//        NSLog(@"result: %@", result);
+//        NSDictionary *resultDic = [[NSDictionary alloc] initWithDictionary:result];
+//        //NSString *resultJson = [resultDic bv_jsonStringWithPrettyPrint:NO];
+//        //NSLog(@"resultJson: %@", resultJson);
+//        WebClient *webClient = [[WebClient alloc] init];
+//        [webClient postMethodWithCode:@"initializeNewUser" withData:result withCompletion:^{
+//
+//        } withError:^(NSString *error) {
+//
+//        }];
+//    }];
 }
 
 - (void)didReceiveMemoryWarning {

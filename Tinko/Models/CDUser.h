@@ -16,7 +16,7 @@
 @property (nonatomic, strong) NSString *facebookId;
 @property (nonatomic, strong) NSString *gender;
 @property (nonatomic, strong) NSString *location;
-@property (nonatomic, strong) NSString *photoUrl;
+@property (nonatomic, strong) NSString *photoURL;
 
 
 +(void) createOrUpdateCDUserWithUser:(User*)user withContext:(NSManagedObjectContext*)context;

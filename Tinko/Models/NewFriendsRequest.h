@@ -11,10 +11,13 @@
 @interface NewFriendsRequest : NSManagedObject
 @property (nonatomic, strong) NSString *requester;
 @property (nonatomic, strong) NSNumber *requestTime;
-@property (nonatomic, strong) NSNumber *type;
+@property (nonatomic) NSInteger *type;
 @property (nonatomic) BOOL read;
+@property (nonatomic, strong) NSString *requestMessage;
+@property (nonatomic, strong) NSString *requesterPhotoURL;
+@property (nonatomic, strong) NSString *requesterUsername;
 
-+(void)createNewFriendsRequestWithDic:(NSDictionary*)dic withContext:(NSManagedObjectContext*)context;
++(void)createNewFriendsRequestWithRequestDic:(NSDictionary*)requestDic withUserDic:(NSDictionary*)userDic withContext:(NSManagedObjectContext*)context;
 
-
++(void)updateNewFriendsRequestWithRequest:(NewFriendsRequest*)request WithRead:(BOOL)read withType:(NSInteger*)type withContext:(NSManagedObjectContext*)context;
 @end

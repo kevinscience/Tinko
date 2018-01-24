@@ -15,7 +15,7 @@
 @dynamic facebookId;
 @dynamic gender;
 @dynamic location;
-@dynamic photoUrl;
+@dynamic photoURL;
 
 +(void) createOrUpdateCDUserWithUser:(User*)user withContext:(NSManagedObjectContext*)context{
     CDUser *cdUser = [NSEntityDescription insertNewObjectForEntityForName:@"CDUser" inManagedObjectContext:context];
@@ -25,6 +25,6 @@
     cdUser.facebookId = user.facebookId;
     cdUser.gender = user.gender;
     cdUser.location = user.location;
-    cdUser.photoUrl = user.photoURL;
+    cdUser.photoURL = user.photoURL;
 }
 @end

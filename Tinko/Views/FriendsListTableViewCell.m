@@ -34,7 +34,7 @@
 
 - (void)setCellDataWithFriend:(CDUser *)cdUser{
     [self.header setText: cdUser.username];
-    [self.image sd_setImageWithURL:[NSURL URLWithString:cdUser.photoUrl]
+    [self.image sd_setImageWithURL:[NSURL URLWithString:cdUser.photoURL]
                   placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
                            options:SDWebImageRefreshCached];
 }

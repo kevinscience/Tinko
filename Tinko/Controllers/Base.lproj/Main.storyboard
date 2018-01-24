@@ -86,7 +86,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xjR-md-HHb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1658" y="1018"/>
+            <point key="canvasLocation" x="833" y="1851"/>
         </scene>
         <!--Profile Update TableVC-->
         <scene sceneID="wGp-ik-deS">
@@ -273,7 +273,35 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DtF-Zn-ZEM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1656.8" y="1735.6821589205399"/>
+            <point key="canvasLocation" x="1713" y="1851"/>
+        </scene>
+        <!--New Friends Request Folder-->
+        <scene sceneID="Vcr-R2-Dot">
+            <objects>
+                <tableViewController storyboardIdentifier="NewFriendsRequestFolderID" id="EIY-sj-XPr" customClass="NewFriendsRequestFolder" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="EHX-g5-LW4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="q0e-vM-aP9">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="q0e-vM-aP9" id="Gip-GE-GKd">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="EIY-sj-XPr" id="ftA-Hm-dzU"/>
+                            <outlet property="delegate" destination="EIY-sj-XPr" id="NtN-g2-DRZ"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HgO-CS-t3s" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2505" y="1851"/>
         </scene>
         <!--TempVC-->
         <scene sceneID="u5l-Sk-kfd">
@@ -324,7 +352,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="00m-EZ-p4J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1657" y="2490"/>
+            <point key="canvasLocation" x="1713" y="2564"/>
         </scene>
         <!--Friend DetailTVC-->
         <scene sceneID="MPs-hw-r2S">
@@ -385,7 +413,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="41B-9D-lio" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2812" y="2475.1124437781114"/>
+            <point key="canvasLocation" x="2505" y="2564"/>
         </scene>
         <!--Create Tinko-->
         <scene sceneID="37W-7K-vGr">

@@ -50,18 +50,42 @@
     //NSLog(@"FriendDetailTVC: isFriendButtonPressed");
     if(!_isFriend){
         NSLog(@"FriendDetailTVC: isFriendButtonPressed: addFriend");
-         NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
-        NSDictionary *requestDic = @{
-                                     @"requester": facebookId,
-                                     @"responsor": _showingUserFacebookId
-                                     };
-        [_client postMethodWithCode:@"sendAddFriendRequest" withData:requestDic withCompletion:^{
-            
-        } withError:^(NSString *error) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];
-            [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController:alertController animated:YES completion:nil];
+        UIAlertController * alertController = [UIAlertController alertControllerWithTitle: @"Add Friend"
+                                                                                  message: @"Input request message"
+                                                                           preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+            textField.placeholder = @"Message";
+            textField.textColor = [UIColor blueColor];
+            textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+            textField.borderStyle = UITextBorderStyleRoundedRect;
         }];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+
+            NSArray * textfields = alertController.textFields;
+            UITextField * messageField = textfields[0];
+            NSString *requestMessage = messageField.text;
+            
+            NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+            NSDictionary *requestDic = @{
+                                         @"requester": facebookId,
+                                         @"responsor": _showingUserFacebookId,
+                                         @"requestMessage":requestMessage
+                                         };
+            
+            [_client postMethodWithCode:@"sendAddFriendRequest" withData:requestDic withCompletion:^{
+                
+            } withError:^(NSString *error) {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];
+                [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alertController animated:YES completion:nil];
+            }];
+            
+
+            
+            
+        }]];
+        [self presentViewController:alertController animated:YES completion:nil];
+        
     }
 }
 
