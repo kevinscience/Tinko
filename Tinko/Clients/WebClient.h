@@ -11,5 +11,5 @@
 @interface WebClient : NSObject
 -(void)participateOrLeaveMeetWithCode:(NSString*)code withMeetId:(NSString*)meetId withFacebookId:(NSString*)facebookId withCompletion:(void (^)(void))completion withError:(void (^)(NSString *error))errorBlock;
 
--(void)postMethodWithCode:(NSString*)code withData:(NSDictionary*)data withCompletion:(void (^)(void))completion withError:(void (^)(NSString *error))errorBlock;
++(void)postMethodWithCode:(NSString*)code withData:(NSDictionary*)data withCompletion:(void (^)(void))completion withError:(void (^)(NSString *error))errorBlock;
 @end

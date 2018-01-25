@@ -17,7 +17,6 @@
 @property BOOL isFriend;
 @property(weak, nonatomic)NSManagedObjectContext *context;
 @property (weak, nonatomic) IBOutlet UIButton *isFriendButton;
-@property (nonatomic, strong) WebClient *client;
 @end
 
 @implementation FriendDetailTVC
@@ -25,7 +24,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSLog(@"showingUserFacebookId: %@", _showingUserFacebookId);
-    _client = [[WebClient alloc] init];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     _context = appDelegate.persistentContainer.viewContext;
     
@@ -36,8 +34,16 @@
     _isFriend = count != 0 ? YES : NO;
     NSLog(@"FriendDetailTVC: count: %ld", (long)count);
     
-    //_isFriendButton.titleLabel.text = _isFriend ? @"Already Friends" : @"Add Friend";
-    [_isFriendButton setTitle:_isFriend ? @"Already Friends" : @"Add Friend" forState:UIControlStateNormal];
+    if(_isFriend){
+        NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+        if([_showingUserFacebookId isEqualToString:facebookId]){
+            [_isFriendButton setTitle:@"Self" forState:UIControlStateNormal];
+        } else {
+            [_isFriendButton setTitle:@"Already Friends" forState:UIControlStateNormal];
+        }
+    } else {
+        [_isFriendButton setTitle:@"Add Friend" forState:UIControlStateNormal];
+    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -72,7 +78,7 @@
                                          @"requestMessage":requestMessage
                                          };
             
-            [_client postMethodWithCode:@"sendAddFriendRequest" withData:requestDic withCompletion:^{
+            [WebClient postMethodWithCode:@"sendAddFriendRequest" withData:requestDic withCompletion:^{
                 
             } withError:^(NSString *error) {
                 UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];

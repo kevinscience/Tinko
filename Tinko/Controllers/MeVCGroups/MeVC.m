@@ -22,7 +22,6 @@
 
 @interface MeVC ()
 @property (weak, nonatomic) IBOutlet UITableView *table;
-@property NSMutableArray *friendsListArray;
 @property User *theUser;
 @property(weak, nonatomic)NSPersistentContainer *container;
 @property(weak, nonatomic)NSManagedObjectContext *context;
@@ -35,6 +34,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
 
     [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor whiteColor],
                                                                 NSFontAttributeName:[UIFont systemFontOfSize:19 weight:UIFontWeightSemibold]}];
@@ -49,9 +49,8 @@
     [_context setMergePolicy:NSOverwriteMergePolicy];
     [self initializeFetchedResultsController];
     
-    _friendsListArray = [[NSMutableArray alloc] init];
     
-    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    
     
     FIRDocumentReference *myDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:_facebookId];
     [myDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
@@ -63,11 +62,7 @@
             [thisUser setUser:_theUser];
             //Save to Core Data
             [CDUser createOrUpdateCDUserWithUser:_theUser withContext:_context];
-            NSError *error = nil;
-            if ([_context hasChanges] && ![_context save:&error]) {
-                NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                abort();
-            }
+            
         } else {
             NSLog(@"Document does not exist");
             _theUser = [[User alloc] init];
@@ -78,41 +73,41 @@
     }];
     
     
-    [[FIRFirestore.firestore collectionWithPath:[NSString stringWithFormat:@"Users/%@/Friends_List", _facebookId]]
-     getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
-         if (error != nil) {
-             NSLog(@"Error getting documents: %@", error);
-         } else {
-             //NSLog(@"DOCUMENTS: %@", snapshot.documents);
-             for (FIRDocumentSnapshot *document in snapshot.documents) {
-                 //NSLog(@"%@ => %@", document.documentID, document.data);
-                 NSString *userFacebookId = document.documentID;
-                 //NSLog(@"userFacebookId: %@", userFacebookId);
-                 FIRDocumentReference *userDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:userFacebookId];
-                 [userDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-                     if (snapshot.exists) {
-                         //NSLog(@"myDocRef Document data: %@", snapshot.data);
-                         NSDictionary *dic = snapshot.data;
-                         User *user = [[User alloc] initWithDictionary:dic];
-                         [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
-                         NSError *error = nil;
-                         if ([_context hasChanges] && ![_context save:&error]) {
-                             NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                             abort();
-                         }
-                     } else {
-                         NSLog(@"Document does not exist");
-                     }
-                     [self initializeFetchedResultsController];
-                     NSRange range = NSMakeRange(1, 1);
-                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
-                     [self.table reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
-                     
-                 }];
-             }
-             
-         }
-     }];
+//    [[FIRFirestore.firestore collectionWithPath:[NSString stringWithFormat:@"Users/%@/Friends_List", _facebookId]]
+//     getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
+//         if (error != nil) {
+//             NSLog(@"Error getting documents: %@", error);
+//         } else {
+//             //NSLog(@"DOCUMENTS: %@", snapshot.documents);
+//             for (FIRDocumentSnapshot *document in snapshot.documents) {
+//                 //NSLog(@"%@ => %@", document.documentID, document.data);
+//                 NSString *userFacebookId = document.documentID;
+//                 //NSLog(@"userFacebookId: %@", userFacebookId);
+//                 FIRDocumentReference *userDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:userFacebookId];
+//                 [userDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+//                     if (snapshot.exists) {
+//                         //NSLog(@"myDocRef Document data: %@", snapshot.data);
+//                         NSDictionary *dic = snapshot.data;
+//                         User *user = [[User alloc] initWithDictionary:dic];
+//                         [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
+//                         NSError *error = nil;
+//                         if ([_context hasChanges] && ![_context save:&error]) {
+//                             NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+//                             abort();
+//                         }
+//                     } else {
+//                         NSLog(@"Document does not exist");
+//                     }
+//                     [self initializeFetchedResultsController];
+//                     NSRange range = NSMakeRange(1, 1);
+//                     NSIndexSet *section = [NSIndexSet indexSetWithIndexesInRange:range];
+//                     [self.table reloadSections:section withRowAnimation:UITableViewRowAnimationNone];
+//
+//                 }];
+//             }
+//
+//         }
+//     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewFriendsRequest:) name:@"NewFriendsRequestNotification" object:nil];
 }
@@ -200,7 +195,9 @@
         return 4;
     } else{
         id< NSFetchedResultsSectionInfo> sectionInfo = [[self fetchedResultsController] sections][0];
-        return [sectionInfo numberOfObjects];    }
+        return [sectionInfo numberOfObjects];
+        
+    }
     
 }
 
@@ -262,13 +259,13 @@
 {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDUser"];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"NOT (facebookId == %@)", _facebookId]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"facebookId != %@", _facebookId]];
     NSSortDescriptor *usernameSort = [NSSortDescriptor sortDescriptorWithKey:@"username" ascending:YES];
     
     [request setSortDescriptors:@[usernameSort]];
     
     [self setFetchedResultsController:[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_context sectionNameKeyPath:nil cacheName:nil]];
-    //self.fetchedResultsController.delegate = self;
+    self.fetchedResultsController.delegate = self;
     
     NSError *error = nil;
     if (![[self fetchedResultsController] performFetch:&error]) {
@@ -284,12 +281,12 @@
     [cell.image setImage:[UIImage imageNamed:@"newFriendsWithDot"]];
 }
 
-//#pragma mark - NSFetchedResultsControllerDelegate
-//- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-//{
-//    NSLog(@"controllerwillchangeContent");
-//    [self.table beginUpdates];
-//}
+#pragma mark - NSFetchedResultsControllerDelegate
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    NSLog(@"controllerwillchangeContent");
+    [self.table beginUpdates];
+}
 //- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 //{
 //    NSLog(@"controllerdidchangesection");
@@ -305,32 +302,32 @@
 //            break;
 //    }
 //}
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
-//{
-//    NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-//    NSIndexPath *customNewIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:newIndexPath.section-1];
-//    NSLog(@"controllerwilldidchangeObject");
-//    switch(type) {
-//        case NSFetchedResultsChangeInsert:
-//            [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeDelete:
-//            [self.table deleteRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeUpdate:
-//            [self.table reloadRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeMove:
-//            [self.table deleteRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//    }
-//}
-//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-//{
-//    NSLog(@"controllerdidchangecontent");
-//    [self.table endUpdates];
-//}
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+1];
+    NSIndexPath *customNewIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:newIndexPath.section+1];
+    NSLog(@"controllerwilldidchangeObject");
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.table deleteRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self.table reloadRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+            [self.table deleteRowsAtIndexPaths:@[customIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    NSLog(@"controllerdidchangecontent");
+    [self.table endUpdates];
+}
 
 
 

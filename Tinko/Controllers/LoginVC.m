@@ -116,8 +116,8 @@ NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
        [resultDic setObject:user.uid forKey:@"uid"];
        NSLog(@"resultDic: %@", resultDic);
 
-       WebClient *webClient = [[WebClient alloc] init];
-       [webClient postMethodWithCode:@"initializeNewUser" withData:resultDic withCompletion:^{
+       //WebClient *webClient = [[WebClient alloc] init];
+       [WebClient postMethodWithCode:@"initializeNewUser" withData:resultDic withCompletion:^{
            //Start new viewController
            MainTabBarVC *secondView = [self.storyboard instantiateViewControllerWithIdentifier:@"MainTabBarVCID"];
            [self presentViewController: secondView animated:YES completion: nil];

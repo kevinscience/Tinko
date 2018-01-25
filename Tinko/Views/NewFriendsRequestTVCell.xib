@@ -32,12 +32,11 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yml-jk-wzR">
-                        <rect key="frame" x="66" y="37" width="192" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yml-jk-wzR">
+                        <rect key="frame" x="66" y="40" width="197" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
+                        <color key="highlightedColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Facebook" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k35-za-3Tj">
                         <rect key="frame" x="257" y="26" width="55" height="14.5"/>
@@ -45,18 +44,21 @@
                         <color key="textColor" red="0.43529411759999997" green="0.4431372549" blue="0.47450980390000003" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L8b-Y4-ca5">
+                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L8b-Y4-ca5">
                         <rect key="frame" x="263" y="18" width="49" height="30"/>
                         <state key="normal" title="Accept"/>
                     </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="PmU-dv-KgR" firstAttribute="top" secondItem="pr1-gh-w3N" secondAttribute="top" id="JiU-aX-gzx"/>
+                    <constraint firstItem="L8b-Y4-ca5" firstAttribute="leading" secondItem="Yml-jk-wzR" secondAttribute="trailing" id="NdA-60-1k3"/>
                     <constraint firstAttribute="trailing" secondItem="k35-za-3Tj" secondAttribute="trailing" constant="8" id="PBy-fM-XPl"/>
+                    <constraint firstItem="Yml-jk-wzR" firstAttribute="leading" secondItem="pr1-gh-w3N" secondAttribute="trailing" constant="8" id="PRh-l7-fcr"/>
                     <constraint firstAttribute="trailing" secondItem="L8b-Y4-ca5" secondAttribute="trailing" constant="8" id="Wym-kp-2B4"/>
                     <constraint firstItem="L8b-Y4-ca5" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="caz-ze-PWz"/>
                     <constraint firstItem="PmU-dv-KgR" firstAttribute="leading" secondItem="pr1-gh-w3N" secondAttribute="trailing" constant="8" id="hld-rQ-qq8"/>
                     <constraint firstItem="L8b-Y4-ca5" firstAttribute="leading" secondItem="PmU-dv-KgR" secondAttribute="trailing" id="maP-7v-7dW"/>
+                    <constraint firstItem="Yml-jk-wzR" firstAttribute="bottom" secondItem="pr1-gh-w3N" secondAttribute="bottom" id="n6X-aK-eiL"/>
                     <constraint firstItem="pr1-gh-w3N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="nFq-7H-mvO"/>
                     <constraint firstItem="pr1-gh-w3N" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="oCX-NI-OKV"/>
                     <constraint firstItem="k35-za-3Tj" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="sbf-wz-C63"/>

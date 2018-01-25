@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "NewFriendsRequestTVCell.h"
 #import "NewFriendsRequest.h"
+#import "WebClient.h"
 @import Firebase;
 
 @interface NewFriendsRequestFolder ()
@@ -124,7 +125,67 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
     NewFriendsRequest *request = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog(@"NewFriendsRequestFolder: acceptButtonClicked: requester = %@", request.requester);
+    NSString *facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    NSDictionary *postDic = @{
+                              @"requester":request.requester,
+                              @"responsor":facebookId
+                              };
+    [WebClient postMethodWithCode:@"initializeTwoWayFriendship" withData:postDic withCompletion:^{
+        [NewFriendsRequest updateNewFriendsRequestWithRequest:request WithRead:YES withType:[@1 integerValue] withContext:_context];
+    } withError:^(NSString *error) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }];
 }
+
+#pragma mark - NSFetchedResultsControllerDelegate
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    NSLog(@"controllerwillchangeContent");
+    [self.tableView beginUpdates];
+}
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    NSLog(@"controllerdidchangesection");
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex-1] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex-1] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+        case NSFetchedResultsChangeUpdate:
+            break;
+    }
+}
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    NSLog(@"controllerwilldidchangeObject");
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    NSLog(@"controllerdidchangecontent");
+    [self.tableView endUpdates];
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

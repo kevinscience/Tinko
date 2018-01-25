@@ -26,5 +26,11 @@
     cdUser.gender = user.gender;
     cdUser.location = user.location;
     cdUser.photoURL = user.photoURL;
+    
+    NSError *error = nil;
+    if ([context hasChanges] && ![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+        abort();
+    }
 }
 @end

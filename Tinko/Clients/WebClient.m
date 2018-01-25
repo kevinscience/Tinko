@@ -33,7 +33,7 @@
 }
 
 
--(void)postMethodWithCode:(NSString*)code withData:(NSDictionary*)data withCompletion:(void (^)(void))completion withError:(void (^)(NSString *error))errorBlock{
++(void)postMethodWithCode:(NSString*)code withData:(NSDictionary*)data withCompletion:(void (^)(void))completion withError:(void (^)(NSString *error))errorBlock{
 //    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
 //    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
 //    NSString *urlString = [NSString stringWithFormat:@"https://us-central1-tinko-64673.cloudfunctions.net/%@", code];
