@@ -23,6 +23,7 @@
 @property NSString *facebookId;
 @property BOOL participating;
 @property User *creatorUser;
+@property FIRFirestore *db;
 @end
 
 //Fetch New Meet Data in ViewDIdLoad and apply to table
@@ -34,27 +35,41 @@
     _table.dataSource = self;
     _client = [[WebClient alloc] init];
     self.table.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
+    _db = FIRFirestore.firestore;
     _sharedMeet = [SharedMeet sharedMeet];
-    _meet = [_sharedMeet meet];
-    NSLog(@"TinkoDetail: %@", _meet.title);
-    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
-    NSArray *participatedUsersList = _meet.participatedUsersList;
-    _participating = [participatedUsersList containsObject:_facebookId];
-    // Do any additional setup after loading the view from its nib.
+    NSString *meetId = [_sharedMeet meetId];
     
-    NSString *creatorFacebookId = _meet.creatorFacebookId;
-    FIRDocumentReference *creatorDocRef = [[FIRFirestore.firestore collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
-    [creatorDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+    FIRDocumentReference *meetRef = [[_db collectionWithPath:@"Meets"] documentWithPath:meetId];
+    [meetRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
         if (snapshot.exists) {
             //NSLog(@"Document data: %@", snapshot.data);
             NSDictionary *dic = snapshot.data;
-            _creatorUser = [[User alloc] initWithDictionary:dic];
+            _meet = [[Meet alloc] initWithDictionary:dic];
+            NSLog(@"TinkoDetail: %@", _meet.title);
+            _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+            NSArray *participatedUsersList = _meet.participatedUsersList;
+            _participating = [participatedUsersList containsObject:_facebookId];
+            // Do any additional setup after loading the view from its nib.
+            
+            NSString *creatorFacebookId = _meet.creatorFacebookId;
+            FIRDocumentReference *creatorDocRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+            [creatorDocRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+                if (snapshot.exists) {
+                    //NSLog(@"Document data: %@", snapshot.data);
+                    NSDictionary *dic = snapshot.data;
+                    _creatorUser = [[User alloc] initWithDictionary:dic];
+                } else {
+                    NSLog(@"Document does not exist");
+                    _creatorUser = [[User alloc] init];
+                }
+                [self.table reloadData];
+            }];
+            
         } else {
             NSLog(@"Document does not exist");
-            _creatorUser = [[User alloc] init];
         }
-        [self.table reloadData];
     }];
+    
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

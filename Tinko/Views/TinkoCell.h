@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Meet.h"
 #import "User.h"
+#import "CDMyMeet.h"
 
 @interface TinkoCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *profileImage;
@@ -17,4 +18,5 @@
 @property (weak, nonatomic) IBOutlet UILabel *time;
 @property (weak, nonatomic) IBOutlet UILabel *placeName;
 - (void)setCellData:(Meet *)meet withUser:(User *)user;
+- (void)setCellDataWithCDMeet:(CDMyMeet*)cdMeet;
 @end

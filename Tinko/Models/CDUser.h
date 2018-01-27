@@ -9,6 +9,7 @@
 #import <CoreData/CoreData.h>
 #import "User.h"
 
+@class CDMyMeet;
 @interface CDUser : NSManagedObject
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *uid;
@@ -19,5 +20,5 @@
 @property (nonatomic, strong) NSString *photoURL;
 
 
-+(void) createOrUpdateCDUserWithUser:(User*)user withContext:(NSManagedObjectContext*)context;
++(CDUser*) createOrUpdateCDUserWithUser:(User*)user withContext:(NSManagedObjectContext*)context;
 @end

@@ -35,6 +35,21 @@
                                   options:SDWebImageRefreshCached];
 }
 
+- (void)setCellDataWithCDMeet:(CDMyMeet*)cdMeet{
+    _title.text = cdMeet.title;
+    NSDate *startTime = cdMeet.startTime;
+    NSDateFormatter *formatter=[[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"MMM dd, YYYY    hh:mm a"];
+    self.time.text=[NSString stringWithFormat:@"%@",[formatter stringFromDate: startTime]];
+    _placeName.text = cdMeet.placeName;
+    
+    [self.creatorName setText:cdMeet.creatorUser.username];
+    [self.profileImage sd_setImageWithURL:[NSURL URLWithString:cdMeet.creatorUser.photoURL]
+                         placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
+                                  options:SDWebImageRefreshCached];
+}
+
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

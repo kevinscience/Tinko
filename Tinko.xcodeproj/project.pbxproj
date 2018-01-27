@@ -15,6 +15,7 @@
 		416481C52017CAC400E05D40 /* NewFriendsRequestFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481C42017CAC400E05D40 /* NewFriendsRequestFolder.m */; };
 		416481CC2018417100E05D40 /* NewFriendsRequestTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481CA2018417100E05D40 /* NewFriendsRequestTVCell.m */; };
 		416481CD2018417100E05D40 /* NewFriendsRequestTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 416481CB2018417100E05D40 /* NewFriendsRequestTVCell.xib */; };
+		416481D9201C20E300E05D40 /* CDMyMeet.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481D8201C20E200E05D40 /* CDMyMeet.m */; };
 		419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AC1FE9D2B6001FBF82 /* AppDelegate.m */; };
 		419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AF1FE9D2B6001FBF82 /* LoginVC.m */; };
 		419011B31FE9D2B6001FBF82 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 419011B11FE9D2B6001FBF82 /* Main.storyboard */; };
@@ -98,6 +99,8 @@
 		416481C92018417100E05D40 /* NewFriendsRequestTVCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewFriendsRequestTVCell.h; sourceTree = "<group>"; };
 		416481CA2018417100E05D40 /* NewFriendsRequestTVCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewFriendsRequestTVCell.m; sourceTree = "<group>"; };
 		416481CB2018417100E05D40 /* NewFriendsRequestTVCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewFriendsRequestTVCell.xib; sourceTree = "<group>"; };
+		416481D7201C20E200E05D40 /* CDMyMeet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDMyMeet.h; sourceTree = "<group>"; };
+		416481D8201C20E200E05D40 /* CDMyMeet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDMyMeet.m; sourceTree = "<group>"; };
 		419011A81FE9D2B6001FBF82 /* Tinko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		419011AB1FE9D2B6001FBF82 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		419011AC1FE9D2B6001FBF82 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -420,16 +423,18 @@
 			children = (
 				41BF7AFE20144B2400360778 /* SharedMeet.h */,
 				41BF7AFD20144B2400360778 /* SharedMeet.m */,
-				41BF7AF72011752200360778 /* CDUser.h */,
-				41BF7AF62011752200360778 /* CDUser.m */,
 				41AAD8EE1FF88A7D0020532B /* Message.h */,
 				41AAD8EF1FF88A7D0020532B /* Message.m */,
-				41AAD8CD1FF1C5750020532B /* Meet.m */,
 				41AAD8CF1FF1C58D0020532B /* Meet.h */,
+				41AAD8CD1FF1C5750020532B /* Meet.m */,
+				416481D7201C20E200E05D40 /* CDMyMeet.h */,
+				416481D8201C20E200E05D40 /* CDMyMeet.m */,
 				41AAD9081FF9774B0020532B /* ThisUser.h */,
 				41AAD9091FF9774B0020532B /* ThisUser.m */,
 				41AAD90B1FF978410020532B /* User.h */,
 				41AAD90C1FF978410020532B /* User.m */,
+				41BF7AF72011752200360778 /* CDUser.h */,
+				41BF7AF62011752200360778 /* CDUser.m */,
 				411A886820037901002A5FA0 /* NSDictionary.h */,
 				411A886920037901002A5FA0 /* NSDictionary.m */,
 				416481C02017083500E05D40 /* NewFriendsRequest.h */,
@@ -804,6 +809,7 @@
 				41AAD8A51FEF631C0020532B /* NearbyTinkoTableVC.m in Sources */,
 				41BF7AFF20144B2400360778 /* SharedMeet.m in Sources */,
 				416481C52017CAC400E05D40 /* NewFriendsRequestFolder.m in Sources */,
+				416481D9201C20E300E05D40 /* CDMyMeet.m in Sources */,
 				41AAD8CE1FF1C5750020532B /* Meet.m in Sources */,
 				41AAD8EC1FF889F20020532B /* MessageTextView.m in Sources */,
 				41AAD8AA1FF02F3A0020532B /* TinkoCell.m in Sources */,

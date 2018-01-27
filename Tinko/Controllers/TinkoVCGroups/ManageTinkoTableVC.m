@@ -12,15 +12,20 @@
 #import "EKBHeap.h"
 #import "TinkoDisplayRootVC.h"
 #import "SharedMeet.h"
+#import "CDMyMeet.h"
+#import "AppDelegate.h"
 @import Firebase;
 
 @interface ManageTinkoTableVC ()
-@property NSMutableArray<Meet *> *meetsArray;
-@property NSMutableArray *meetsIdArray;
-@property NSMutableArray *meetsUserArray;
-@property NSMutableDictionary *meetsIdDictionary;
+//@property NSMutableArray<Meet *> *meetsArray;
+//@property NSMutableArray *meetsIdArray;
+//@property NSMutableArray *meetsUserArray;
+//@property NSMutableDictionary *meetsIdDictionary;
 @property FIRFirestore *db;
 @property NSString *facebookId;
+@property(weak, nonatomic)NSPersistentContainer *container;
+@property(weak, nonatomic)NSManagedObjectContext *context;
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @end
 
 @implementation ManageTinkoTableVC
@@ -28,73 +33,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    _meetsArray = [[NSMutableArray alloc] init];
-    _meetsIdArray = [[NSMutableArray alloc] init];
-    _meetsUserArray = [[NSMutableArray alloc] init];
-    _meetsIdDictionary = [[NSMutableDictionary alloc] init];
+//    _meetsArray = [[NSMutableArray alloc] init];
+//    _meetsIdArray = [[NSMutableArray alloc] init];
+//    _meetsUserArray = [[NSMutableArray alloc] init];
+//    _meetsIdDictionary = [[NSMutableDictionary alloc] init];
     _db = FIRFirestore.firestore;
     _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
-    [self loadExistedMeetsFromFirestore];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    _container = appDelegate.persistentContainer;
+    _context = _container.viewContext;
+    [_context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
+    
+    [self initializeFetchedResultsController];
+    [self addInvolvedMeetsSnapshotListener];
+    
 }
 
--(void)loadExistedMeetsFromFirestore{
-    NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
-    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
-    FIRQuery *query = [meetsRef queryOrderedByField:queryString];
-    [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
-        if (error != nil) {
-            NSLog(@"Error getting documents: %@", error);
-        } else {
-            NSLog(@"Count of new refresh documents: %lu", (unsigned long)snapshot.documents.count);
-            for (FIRDocumentSnapshot *document in snapshot.documents) {
-                //NSLog(@"%@ => %@", document.documentID, document.data);
-                Meet *meet = [[Meet alloc] initWithDictionary:document.data];
-                NSString *creatorFacebookId = meet.creatorFacebookId;
-                FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
-                [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
-                    User *user;
-                    if (snapshot != nil) {
-                        //NSLog(@"Document data: %@", snapshot.data);
-                        user = [[User alloc] initWithDictionary:snapshot.data];
-                        
-                    } else {
-                        NSLog(@"Document does not exist");
-                        user = [[User alloc] init];
-                    }
-                    [_meetsUserArray addObject:user];
-                    [_meetsArray addObject:meet];
-                    [_meetsIdArray addObject:document.documentID];
-                    [self.tableView reloadData];
-                }];
+-(void)addInvolvedMeetsSnapshotListener{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
+        FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
+        FIRQuery *query = [meetsRef queryOrderedByField:queryString];
+        [query addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
+            if (snapshot == nil) {
+                NSLog(@"Error fetching documents: %@", error);
+                return;
             }
-            //NSLog(@"%@", _meetsIdDictionary);
-            [self addNewAddMeetsObserver];
-        }
-    }];
-    
-}
-
-- (void) addNewAddMeetsObserver{
-    NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
-    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
-    FIRQuery *query = [meetsRef queryOrderedByField:queryString];
-    [query addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
-        if (snapshot == nil) {
-            NSLog(@"Error fetching documents: %@", error);
-            return;
-        }
-        for (FIRDocumentChange *diff in snapshot.documentChanges) {
-            if (diff.type == FIRDocumentChangeTypeAdded) {
-                
-                NSString *documentId = diff.document.documentID;
-                if([_meetsIdArray indexOfObject:diff.document.documentID] == NSNotFound){
+            for (FIRDocumentChange *diff in snapshot.documentChanges) {
+                if (diff.type == FIRDocumentChangeTypeAdded){
                     Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
-                    
                     NSString *creatorFacebookId = meet.creatorFacebookId;
                     FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
                     [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
@@ -102,45 +70,56 @@
                         if (snapshot != nil) {
                             //NSLog(@"Document data: %@", snapshot.data);
                             user = [[User alloc] initWithDictionary:snapshot.data];
+                            [_context performBlock:^{
+                                CDUser *cdUser = [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
+                                [CDMyMeet createOrUpdateMeetWithMeet:meet withMeetId:diff.document.documentID withCDUser:cdUser withContext:_context];
+                                NSError *error = nil;
+                                if ([_context hasChanges] && ![_context save:&error]) {
+                                    NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                                    abort();
+                                }
+                            }];
                             
                         } else {
                             NSLog(@"Document does not exist");
-                            user = [[User alloc] init];
+                            //user = [[User alloc] init];
                         }
-                        [_meetsUserArray addObject:user];
-                        [_meetsArray addObject:meet];
-                        [_meetsIdArray addObject:documentId];
-                        
-                        //HEAP SORT
-                        NSDictionary *doc = heapSort(_meetsArray, _meetsIdArray, _meetsUserArray);
-                        //NSLog(@"%@", doc);
-                        _meetsArray = doc[@"meetsArray"];
-                        _meetsIdArray = doc[@"meetsIdArray"];
-                        _meetsUserArray = doc[@"meetsUserArray"];
-                        
-                        [self.tableView reloadData];
                     }];
                 }
-                
+                if (diff.type == FIRDocumentChangeTypeModified) {
+                    //NSLog(@"Modified city: %@", diff.document.data);
+                }
+                if (diff.type == FIRDocumentChangeTypeRemoved) {
+                    //                NSLog(@"Removed meet: %@", diff.document.data);
+                    //                NSString *documentId = diff.document.documentID;
+                }
             }
-            if (diff.type == FIRDocumentChangeTypeModified) {
-                //NSLog(@"Modified city: %@", diff.document.data);
-            }
-            if (diff.type == FIRDocumentChangeTypeRemoved) {
-                NSLog(@"Removed meet: %@", diff.document.data);
-                NSString *documentId = diff.document.documentID;
-                NSInteger index = [_meetsIdArray indexOfObject:documentId];
-                [_meetsArray removeObjectAtIndex:index];
-                [_meetsIdArray removeObjectAtIndex:index];
-                [_meetsUserArray removeObjectAtIndex:index];
-                [self.tableView reloadData];
-            }
-        }
-        
-        //
-    }];
+            
+            
+            //
+        }];
+    });
 }
 
+- (void)initializeFetchedResultsController
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDMyMeet"];
+    
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:YES];
+    
+    [request setSortDescriptors:@[sort]];
+    
+    //NSManagedObjectContext *moc = …; //Retrieve the main queue NSManagedObjectContext
+    
+    [self setFetchedResultsController:[[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:_context sectionNameKeyPath:nil cacheName:nil]];
+    [[self fetchedResultsController] setDelegate:self];
+    
+    NSError *error = nil;
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        NSLog(@"Failed to initialize FetchedResultsController: %@\n%@", [error localizedDescription], [error userInfo]);
+        abort();
+    }
+}
 
 
 - (void)didReceiveMemoryWarning {
@@ -151,11 +130,12 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return [[[self fetchedResultsController] sections] count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _meetsArray.count;
+    id< NSFetchedResultsSectionInfo> sectionInfo = [[self fetchedResultsController] sections][section];
+    return [sectionInfo numberOfObjects];
 }
 
 
@@ -166,10 +146,9 @@
         NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
         cell = (TinkoCell *)[nib objectAtIndex:0];
     }
-    if(_meetsArray.count > 0 && _meetsArray.count > indexPath.row){
-        [cell setCellData:_meetsArray[indexPath.row] withUser:_meetsUserArray[indexPath.row]];
-    }
-
+    
+    CDMyMeet *cdMyMeet = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [cell setCellDataWithCDMeet:cdMyMeet];
 
 
     return cell;
@@ -178,13 +157,13 @@
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
-    //TinkoDisccusionVC *secondView = [TinkoDisccusionVC new];
     secondView.hidesBottomBarWhenPushed = YES;
     SharedMeet *sharedMeet = [SharedMeet sharedMeet];
-    Meet *meet = _meetsArray[indexPath.row];
-    [sharedMeet setMeet:meet];
-    [sharedMeet setMeetId:_meetsIdArray[indexPath.row]];
-    NSLog(@"TinkoTable: %@", meet.title);
+    CDMyMeet *cdMeet = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    //Meet *meet = _meetsArray[indexPath.row];
+    //[sharedMeet setMeet:meet];
+    [sharedMeet setMeetId:cdMeet.meetId];
+    //NSLog(@"TinkoTable: %@", meet.title);
     [self.navigationController pushViewController: secondView animated:YES];
 }
 
@@ -206,7 +185,54 @@
     return [UIColor whiteColor];
 }
 
-
+#pragma mark - NSFetchedResultsControllerDelegate
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    NSLog(@"controllerwillchangeContent");
+    [[self tableView] beginUpdates];
+    
+}
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    NSLog(@"controllerdidchangesection");
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [[self tableView] insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [[self tableView] deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+        case NSFetchedResultsChangeUpdate:
+            break;
+    }
+}
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    NSLog(@"controllerwilldidchangeObject");
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [[self tableView] deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+            [[self tableView] deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+    
+}
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    NSLog(@"controllerdidchangecontent");
+    [[self tableView] endUpdates];
+    
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -266,5 +292,106 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+//-(void)loadExistedMeetsFromFirestore{
+//    NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
+//    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
+//    FIRQuery *query = [meetsRef queryOrderedByField:queryString];
+//    [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
+//        if (error != nil) {
+//            NSLog(@"Error getting documents: %@", error);
+//        } else {
+//            NSLog(@"Count of new refresh documents: %lu", (unsigned long)snapshot.documents.count);
+//            for (FIRDocumentSnapshot *document in snapshot.documents) {
+//                //NSLog(@"%@ => %@", document.documentID, document.data);
+//                Meet *meet = [[Meet alloc] initWithDictionary:document.data];
+//                NSString *creatorFacebookId = meet.creatorFacebookId;
+//                FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+//                [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+//                    User *user;
+//                    if (snapshot != nil) {
+//                        //NSLog(@"Document data: %@", snapshot.data);
+//                        user = [[User alloc] initWithDictionary:snapshot.data];
+//
+//                    } else {
+//                        NSLog(@"Document does not exist");
+//                        user = [[User alloc] init];
+//                    }
+//                    [_meetsUserArray addObject:user];
+//                    [_meetsArray addObject:meet];
+//                    [_meetsIdArray addObject:document.documentID];
+//                    [self.tableView reloadData];
+//                }];
+//            }
+//            //NSLog(@"%@", _meetsIdDictionary);
+//            [self addNewAddMeetsObserver];
+//        }
+//    }];
+//
+//}
+//
+//- (void) addNewAddMeetsObserver{
+//    NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
+//    FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
+//    FIRQuery *query = [meetsRef queryOrderedByField:queryString];
+//    [query addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
+//        if (snapshot == nil) {
+//            NSLog(@"Error fetching documents: %@", error);
+//            return;
+//        }
+//        for (FIRDocumentChange *diff in snapshot.documentChanges) {
+//            if (diff.type == FIRDocumentChangeTypeAdded) {
+//
+//                NSString *documentId = diff.document.documentID;
+//                if([_meetsIdArray indexOfObject:diff.document.documentID] == NSNotFound){
+//                    Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
+//
+//                    NSString *creatorFacebookId = meet.creatorFacebookId;
+//                    FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
+//                    [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+//                        User *user;
+//                        if (snapshot != nil) {
+//                            //NSLog(@"Document data: %@", snapshot.data);
+//                            user = [[User alloc] initWithDictionary:snapshot.data];
+//
+//                        } else {
+//                            NSLog(@"Document does not exist");
+//                            user = [[User alloc] init];
+//                        }
+//                        [_meetsUserArray addObject:user];
+//                        [_meetsArray addObject:meet];
+//                        [_meetsIdArray addObject:documentId];
+//
+//                        //HEAP SORT
+//                        NSDictionary *doc = heapSort(_meetsArray, _meetsIdArray, _meetsUserArray);
+//                        //NSLog(@"%@", doc);
+//                        _meetsArray = doc[@"meetsArray"];
+//                        _meetsIdArray = doc[@"meetsIdArray"];
+//                        _meetsUserArray = doc[@"meetsUserArray"];
+//
+//                        [self.tableView reloadData];
+//                    }];
+//                }
+//
+//            }
+//            if (diff.type == FIRDocumentChangeTypeModified) {
+//                //NSLog(@"Modified city: %@", diff.document.data);
+//            }
+//            if (diff.type == FIRDocumentChangeTypeRemoved) {
+//                NSLog(@"Removed meet: %@", diff.document.data);
+//                NSString *documentId = diff.document.documentID;
+//                NSInteger index = [_meetsIdArray indexOfObject:documentId];
+//                [_meetsArray removeObjectAtIndex:index];
+//                [_meetsIdArray removeObjectAtIndex:index];
+//                [_meetsUserArray removeObjectAtIndex:index];
+//                [self.tableView reloadData];
+//            }
+//        }
+//
+//        //
+//    }];
+//}
+
 
 @end

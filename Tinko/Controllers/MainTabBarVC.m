@@ -36,7 +36,7 @@
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     _container = appDelegate.persistentContainer;
     _context = _container.viewContext;
-    [_context setMergePolicy:NSOverwriteMergePolicy];
+    [_context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
     
     _tabBarItemMe = [self.tabBar.items objectAtIndex:2];
     [_tabBarItemMe setImage:[self imageWithImage:[UIImage imageNamed:@"newfriends"] scaledToSize:CGSizeMake(30, 30)]];
@@ -81,6 +81,11 @@
                             User *user = [[User alloc] initWithDictionary:dic];
                             [_context performBlock:^{
                                 [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
+                                NSError *error;
+                                if ([_context hasChanges] && ![_context save:&error]) {
+                                    NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                                    abort();
+                                }
                             }];
                             
                         } else {
@@ -95,6 +100,7 @@
                 //                    NSLog(@"Removed city: %@", diff.document.data);
                 //                }
             }
+            
         }];
     });
     

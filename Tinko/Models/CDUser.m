@@ -17,7 +17,7 @@
 @dynamic location;
 @dynamic photoURL;
 
-+(void) createOrUpdateCDUserWithUser:(User*)user withContext:(NSManagedObjectContext*)context{
++(CDUser*) createOrUpdateCDUserWithUser:(User*)user withContext:(NSManagedObjectContext*)context{
     CDUser *cdUser = [NSEntityDescription insertNewObjectForEntityForName:@"CDUser" inManagedObjectContext:context];
     cdUser.uid = user.uid;
     cdUser.username = user.username;
@@ -27,10 +27,12 @@
     cdUser.location = user.location;
     cdUser.photoURL = user.photoURL;
     
-    NSError *error = nil;
-    if ([context hasChanges] && ![context save:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-        abort();
-    }
+//    NSError *error = nil;
+//    if ([context hasChanges] && ![context save:&error]) {
+//        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+//        abort();
+//    }
+    
+    return cdUser;
 }
 @end
