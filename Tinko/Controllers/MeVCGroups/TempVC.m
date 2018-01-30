@@ -82,9 +82,38 @@
     
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"NewFriendsRequest"];
     NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-    
     NSError *deleteError = nil;
     [_context executeRequest:delete error:&deleteError];
+    
+    request = [[NSFetchRequest alloc] initWithEntityName:@"CDUser"];
+    //delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    //[_context executeRequest:delete error:&deleteError];
+    NSError *error = nil;
+    NSArray *array = [_context executeFetchRequest:request error:&error];
+    for(NSManagedObject *managedObject in array){
+        [_context deleteObject:managedObject];
+    }
+    
+    request = [[NSFetchRequest alloc] initWithEntityName:@"CDMyMeet"];
+    delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    [_context executeRequest:delete error:&deleteError];
+    
+    request = [[NSFetchRequest alloc] initWithEntityName:@"CDFriendsMeet"];
+    //delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+    
+    //[_context executeRequest:delete error:&deleteError];
+    //NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"CDFriendsMeet"];
+    //[request setPredicate:[NSPredicate predicateWithFormat:@"Not (meetId IN %@)", meetsIdArray]];
+    
+    NSArray *array2 = [_context executeFetchRequest:request error:&error];
+    for(NSManagedObject *managedObject in array2){
+        [_context deleteObject:managedObject];
+    }
+    if ([_context hasChanges] && ![_context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+        abort();
+    }
+    
     //[myPersistentStoreCoordinator executeRequest:delete withContext:myContext error:&deleteError];
     
 }

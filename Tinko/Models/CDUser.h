@@ -10,6 +10,7 @@
 #import "User.h"
 
 @class CDMyMeet;
+
 @interface CDUser : NSManagedObject
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *uid;

@@ -16,6 +16,7 @@
 		416481CC2018417100E05D40 /* NewFriendsRequestTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481CA2018417100E05D40 /* NewFriendsRequestTVCell.m */; };
 		416481CD2018417100E05D40 /* NewFriendsRequestTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 416481CB2018417100E05D40 /* NewFriendsRequestTVCell.xib */; };
 		416481D9201C20E300E05D40 /* CDMyMeet.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481D8201C20E200E05D40 /* CDMyMeet.m */; };
+		416481DC201D794000E05D40 /* CDFriendsMeet.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481DB201D794000E05D40 /* CDFriendsMeet.m */; };
 		419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AC1FE9D2B6001FBF82 /* AppDelegate.m */; };
 		419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AF1FE9D2B6001FBF82 /* LoginVC.m */; };
 		419011B31FE9D2B6001FBF82 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 419011B11FE9D2B6001FBF82 /* Main.storyboard */; };
@@ -101,6 +102,8 @@
 		416481CB2018417100E05D40 /* NewFriendsRequestTVCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewFriendsRequestTVCell.xib; sourceTree = "<group>"; };
 		416481D7201C20E200E05D40 /* CDMyMeet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDMyMeet.h; sourceTree = "<group>"; };
 		416481D8201C20E200E05D40 /* CDMyMeet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDMyMeet.m; sourceTree = "<group>"; };
+		416481DA201D794000E05D40 /* CDFriendsMeet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDFriendsMeet.h; sourceTree = "<group>"; };
+		416481DB201D794000E05D40 /* CDFriendsMeet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDFriendsMeet.m; sourceTree = "<group>"; };
 		419011A81FE9D2B6001FBF82 /* Tinko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		419011AB1FE9D2B6001FBF82 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		419011AC1FE9D2B6001FBF82 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -429,6 +432,8 @@
 				41AAD8CD1FF1C5750020532B /* Meet.m */,
 				416481D7201C20E200E05D40 /* CDMyMeet.h */,
 				416481D8201C20E200E05D40 /* CDMyMeet.m */,
+				416481DA201D794000E05D40 /* CDFriendsMeet.h */,
+				416481DB201D794000E05D40 /* CDFriendsMeet.m */,
 				41AAD9081FF9774B0020532B /* ThisUser.h */,
 				41AAD9091FF9774B0020532B /* ThisUser.m */,
 				41AAD90B1FF978410020532B /* User.h */,
@@ -798,6 +803,7 @@
 				416481CC2018417100E05D40 /* NewFriendsRequestTVCell.m in Sources */,
 				41AAD8971FEEC6950020532B /* ProfileUpdateTableVC.m in Sources */,
 				419011EC1FEA22B9001FBF82 /* MeVC.m in Sources */,
+				416481DC201D794000E05D40 /* CDFriendsMeet.m in Sources */,
 				41AAD8F01FF88A7D0020532B /* Message.m in Sources */,
 				41AAD8751FEB59730020532B /* ProfileTableViewCell.m in Sources */,
 				41AAD89A1FEEC6D20020532B /* TempVC.m in Sources */,

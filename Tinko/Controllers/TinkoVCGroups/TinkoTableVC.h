@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "XLPagerTabStripViewController.h"
+@import CoreData;
 
-@interface TinkoTableVC : UITableViewController <XLPagerTabStripChildItem>
+@interface TinkoTableVC : UITableViewController <XLPagerTabStripChildItem,NSFetchedResultsControllerDelegate>
 @end

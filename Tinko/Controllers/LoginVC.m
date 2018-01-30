@@ -23,8 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
-    //loginButton.loginBehavior = FBSDKLoginBehaviorNative;
-    loginButton.loginBehavior = FBSDKLoginBehaviorWeb;
+    loginButton.loginBehavior = FBSDKLoginBehaviorNative;
+    //loginButton.loginBehavior = FBSDKLoginBehaviorWeb;
     loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends", @"user_location"];
     loginButton.center = self.view.center;
     [self.view addSubview:loginButton];

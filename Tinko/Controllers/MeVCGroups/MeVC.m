@@ -284,7 +284,7 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    NSLog(@"controllerwillchangeContent");
+    //NSLog(@"controllerwillchangeContent");
     [self.table beginUpdates];
 }
 //- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
@@ -306,7 +306,7 @@
 {
     NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section+1];
     NSIndexPath *customNewIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:newIndexPath.section+1];
-    NSLog(@"controllerwilldidchangeObject");
+    //NSLog(@"controllerwilldidchangeObject");
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [self.table insertRowsAtIndexPaths:@[customNewIndexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -325,7 +325,7 @@
 }
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    NSLog(@"controllerdidchangecontent");
+    //NSLog(@"controllerdidchangecontent");
     [self.table endUpdates];
 }
 

@@ -72,9 +72,9 @@
                             user = [[User alloc] initWithDictionary:snapshot.data];
                             [_context performBlock:^{
                                 CDUser *cdUser = [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
-                                [CDMyMeet createOrUpdateMeetWithMeet:meet withMeetId:diff.document.documentID withCDUser:cdUser withContext:_context];
+                                [CDMyMeet createOrUpdateMeetWithMeet:meet withMeetId:diff.document.documentID withCDUser:cdUser withContext:cdUser.managedObjectContext];
                                 NSError *error = nil;
-                                if ([_context hasChanges] && ![_context save:&error]) {
+                                if ([cdUser.managedObjectContext hasChanges] && ![cdUser.managedObjectContext save:&error]) {
                                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                                     abort();
                                 }
@@ -188,13 +188,13 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    NSLog(@"controllerwillchangeContent");
+    //NSLog(@"controllerwillchangeContent");
     [[self tableView] beginUpdates];
     
 }
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {
-    NSLog(@"controllerdidchangesection");
+    //NSLog(@"controllerdidchangesection");
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [[self tableView] insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -209,7 +209,7 @@
 }
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
 {
-    NSLog(@"controllerwilldidchangeObject");
+    //NSLog(@"controllerwilldidchangeObject");
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -229,7 +229,7 @@
 }
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    NSLog(@"controllerdidchangecontent");
+    //NSLog(@"controllerdidchangecontent");
     [[self tableView] endUpdates];
     
 }
