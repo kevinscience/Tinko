@@ -85,7 +85,8 @@
 {
     // create child view controllers that will be managed by XLPagerTabStripViewController
     //NearbyTinkoTableVC * child_0 = [[NearbyTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
-    TinkoTableVC * child_1 = [[TinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
+    //TinkoTableVC * child_1 = [[TinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
+    TinkoTableVC * child_1 = [self.storyboard instantiateViewControllerWithIdentifier:@"TinkoTableVCID"];
     ManageTinkoTableVC * child_2 = [[ManageTinkoTableVC alloc] initWithStyle:UITableViewStylePlain];
     //TempVC * child_2 = [[TempVC alloc] init];
     //NearbyTinkoMapsVC *child_0 = [[NearbyTinkoMapsVC alloc] init];

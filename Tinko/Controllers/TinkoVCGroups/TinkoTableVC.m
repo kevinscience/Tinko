@@ -33,6 +33,7 @@
 @property(weak, nonatomic)NSManagedObjectContext *context;
 @property NSMutableArray<id<FIRListenerRegistration>> *listenerArray;
 @property BOOL meetsLoadingDone;
+@property NSInteger insets;
 @end
 
 //TODO add a automatically refresher call
@@ -60,11 +61,15 @@
     _orderByPostTime = YES;
     _meetsLoadingDone = NO;
     
+    _insets = 1;
+    
     [self addFloatButton];
     [self initializeFetchedResultsController];
     
     [self addMeetsListener];
 
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+//    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -150,65 +155,6 @@
                 }
             }
             
-//            [self parseSnapshots:snapshot withCompletion:^(NSMutableArray *meetsIdArray)  {
-//                NSError *error = nil;
-////                if ([moc hasChanges] && ![moc save:&error]) {
-////                    NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-////                    abort();
-////                }
-////                [_context performBlock:^{
-////                    NSError *error = nil;
-////                    if (![_context save:&error]) {
-////                        NSLog(@"Error saving context: %@\n%@", [error localizedDescription], [error userInfo]);
-////                        abort();
-////                    }
-////                }];
-//
-//                NSString *lastMeetTitle = snapshot.documents.lastObject.data[@"title"];
-//                NSLog(@"TinkoTable: addMeetsListener: last meet: %@", lastMeetTitle);
-//
-//                NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDFriendsMeet"];
-//                NSInteger count = [_context countForFetchRequest:request error:&error];
-//                NSLog(@"TinkoTable: addMeetsListener: after loop count = %ld", (long)count);
-//                if(count <= 1 && snapshot.documents.count == 1){
-//                    NSLog(@"TinkoTable: addMeetsListener: it is not the last snapshot");
-//                } else {
-//                    _meetsLoadingDone = YES;
-//                    _lastSnapshot = snapshot.documents.lastObject;
-//                    NSLog(@"TinkoTable: addMeetsListener: lastSnapshotDocumentId: %@", _lastSnapshot.documentID);
-//
-//                    [_context performBlock:^{
-//                        NSLog(@"TinkoTable: addMeetsListener: meetsIdArray.count = %lu", (unsigned long)meetsIdArray.count);
-//                        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"CDFriendsMeet"];
-//                        [request setPredicate:[NSPredicate predicateWithFormat:@"Not (meetId IN %@)", meetsIdArray]];
-//                        //                    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-//                        //                    NSError *deleteError = nil;
-//                        //                    [_context executeRequest:delete error:&deleteError];
-//                        NSError *error = nil;
-//                        NSArray *array = [_context executeFetchRequest:request error:&error];
-//                        for(NSManagedObject *managedObject in array){
-//                            [_context deleteObject:managedObject];
-//                        }
-//                        //NSError *error = nil;
-//                        if ([_context hasChanges] && ![_context save:&error]) {
-//                            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-//                            abort();
-//                        }
-//                    }];
-//
-//                }
-            
-//                dispatch_async(dispatch_get_main_queue(), ^(void) {
-//                    NSLog(@"TinkoTable: addMeetsListener: tableview reloadData");
-//                    [self initializeFetchedResultsController];
-//                    [self.tableView reloadData];
-//                });
-//            }];
-            
-            
-            
-            
-            
         }];
         [_listenerArray addObject:listener];
     });
@@ -259,15 +205,7 @@
                                         //NSLog(@"TinkoTable: LoadMore: meet.title = %@", meet.title);
                                         //CDUser *cdUser = [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
                                         [CDFriendsMeet createOrUpdateMeetWithMeet:meet withMeetId:diff.document.documentID withUser:user withContext:_context];
-                                        
-                                        //NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDFriendsMeet"];
-                                        //[request setPredicate:[NSPredicate predicateWithFormat:@"meetId == %@", diff.document.documentID]];
-                                        //NSInteger count = [_context countForFetchRequest:request error:&error];
-                                        //NSLog(@"TinkoTable: LoadMore: coredata.count = %lu", (unsigned long)count);
-//                                        if(count!=0){
-//                                            _lastSnapshot = diff.document;
-//                                            _meetsLoadingDone = YES;
-//                                        }
+
                                         if(index == snapshot.documents.count-1){
                                             NSError *error = nil;
                                             if ([_context hasChanges] && ![_context save:&error]) {
@@ -300,30 +238,6 @@
                         }
                     }
 
-
-//                    for (FIRDocumentSnapshot *document in snapshot.documents) {
-//                        //NSLog(@"%@ => %@", document.documentID, document.data);
-//                        Meet *meet = [[Meet alloc] initWithDictionary:document.data];
-//                        NSString *creatorFacebookId = meet.creatorFacebookId;
-//                        FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
-//                        [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
-//                            User *user;
-//                            if (snapshot != nil) {
-//                                //NSLog(@"Document data: %@", snapshot.data);
-//                                user = [[User alloc] initWithDictionary:snapshot.data];
-//
-//                            } else {
-//                                NSLog(@"Document does not exist");
-//                                user = [[User alloc] init];
-//                            }
-//                            [_meetsUserArray addObject:user];
-//                            [_meetsArray addObject:meet];
-//                            [_meetsIdArray addObject:document.documentID];
-//                            [self.tableView reloadData];
-//                        }];
-//                    }
-
-                    
                 }
 
             }
@@ -392,63 +306,6 @@
 
 }
 
-//-(void)parseSnapshots:(FIRQuerySnapshot*)snapshot withCompletion:(void (^)(NSMutableArray* meetsIdArray))completion {
-//
-//    dispatch_group_t group = dispatch_group_create();
-//
-//    NSMutableArray *meetsIdArray = [[NSMutableArray alloc] init];
-//    for (FIRDocumentChange *diff in snapshot.documentChanges) {
-//        dispatch_group_async(group,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^ {
-//            if (diff.type == FIRDocumentChangeTypeAdded) {
-//
-//                [meetsIdArray addObject:diff.document.documentID];
-//                Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
-//                //NSLog(@"TinkoTable: parseSnanpshots: meet.title: %@", meet.title);
-//                NSString *creatorFacebookId = meet.creatorFacebookId;
-//                [self getUserDataAndUpdateCoreData:creatorFacebookId withMeetId:diff.document.documentID withMeet:meet];
-//            }
-//            if (diff.type == FIRDocumentChangeTypeModified) {
-//                NSLog(@"Modified city: %@", diff.document.data);
-//            }
-//            if (diff.type == FIRDocumentChangeTypeRemoved) {
-//                NSLog(@"Removed city: %@", diff.document.data);
-//                //                     NSString *documentId = diff.document.documentID;
-//                //                     NSInteger index = [_meetsIdArray indexOfObject:documentId];
-//            }
-//        });
-//    }
-//    dispatch_group_notify(group,dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^ {
-//        if (completion) {
-//            completion(meetsIdArray);
-//        }
-//    });
-//}
-//
-//- (void) getUserDataAndUpdateCoreData:(NSString*)creatorFacebookId withMeetId:(NSString*)meetId withMeet:(Meet*)meet{
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
-//        [userRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
-//            User *user;
-//            if (snapshot != nil) {
-//                //NSLog(@"Document data: %@", snapshot.data);
-//                user = [[User alloc] initWithDictionary:snapshot.data];
-//                //CDUser *cdUser = [CDUser createOrUpdateCDUserWithUser:user withContext:moc];
-//                [_context performBlock:^{
-//                    [CDFriendsMeet createOrUpdateMeetWithMeet:meet withMeetId:meetId withUser:user withContext:_context];
-////                    NSError *error = nil;
-////                    if (![_context save:&error]) {
-////                        NSLog(@"Error saving context: %@\n%@", [error localizedDescription], [error userInfo]);
-////                        abort();
-////                    }
-//                }];
-//
-//
-//            }
-//        }];
-//    });
-//}
-
-
 
 
 - (void) pullToRefresh {
@@ -474,66 +331,85 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     id< NSFetchedResultsSectionInfo> sectionInfo = [[self fetchedResultsController] sections][section];
-    return [sectionInfo numberOfObjects];
+    return [sectionInfo numberOfObjects] + _insets;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    TinkoCell *cell = nil;
-    if (cell == nil)
-    {
-        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
-        cell = (TinkoCell *)[nib objectAtIndex:0];
+    if(indexPath.row==0){
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+        return cell;
+
+    } else {
+        TinkoCell *cell = nil;
+        if (cell == nil)
+        {
+            NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TinkoCell" owner:self options:nil];
+            cell = (TinkoCell *)[nib objectAtIndex:0];
+        }
+        
+        NSIndexPath *customIndexPath = [NSIndexPath indexPathForRow:indexPath.row - _insets inSection: indexPath.section];
+        CDFriendsMeet *cdFriendsMeet = [self.fetchedResultsController objectAtIndexPath:customIndexPath];
+        [cell setCellDataWithCDFriendsMeet:cdFriendsMeet];
+        
+        
+        
+        return cell;
     }
     
-    CDFriendsMeet *cdFriendsMeet = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [cell setCellDataWithCDFriendsMeet:cdFriendsMeet];
-    
-    
-    
-    return cell;
 }
 
-//-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//    TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
-//    //TinkoDisccusionVC *secondView = [TinkoDisccusionVC new];
-//    secondView.hidesBottomBarWhenPushed = YES;
-//    SharedMeet *sharedMeet = [SharedMeet sharedMeet];
-//    Meet *meet = _meetsArray[indexPath.row];
-//    [sharedMeet setMeet:meet];
-//    [sharedMeet setMeetId:_meetsIdArray[indexPath.row]];
-//    NSLog(@"TinkoTable: %@", meet.title);
-//     [self.navigationController pushViewController: secondView animated:YES];
-//}
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    TinkoDisplayRootVC *secondView = [storyboard instantiateViewControllerWithIdentifier:@"TinkoDisplayRootVCID"];
+    secondView.hidesBottomBarWhenPushed = YES;
+    SharedMeet *sharedMeet = [SharedMeet sharedMeet];
+    CDFriendsMeet *cdMeet = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    //Meet *meet = _meetsArray[indexPath.row];
+    //[sharedMeet setMeet:meet];
+    [sharedMeet setMeetId:cdMeet.meetId];
+    //NSLog(@"TinkoTable: %@", meet.title);
+    [self.navigationController pushViewController: secondView animated:YES];
+}
 
 
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDFriendsMeet"];
+    NSDate *now = [NSDate date];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"startTime >= %@", now]];
     NSError *error = nil;
     NSInteger count = [_context countForFetchRequest:request error:&error];
     NSLog(@"willDisplayCell outside row: %ld, count: %lu, lastMeetReached:%@", (long)indexPath.row, (unsigned long)count, [NSNumber numberWithBool:_lastMeetReached]);
-    if(!_lastMeetReached && indexPath.row == count -1){
+    if(!_lastMeetReached && indexPath.row >= count -1){
         NSLog(@"willDisplayCell inside row: %ld, count: %lu, meetsLoadingDone: %@", (long)indexPath.row, (unsigned long)count, [NSNumber numberWithBool:_meetsLoadingDone]);
         [self loadMoreMeetFromFirestore];
     }
+    
+//    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+//        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:NO];
+//    }
 }
 
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-  
-    return 124.0f;
+    CGFloat height = self.tableView.rowHeight;
+    if(indexPath.row!=0){
+        height = 124;
+    }
+    return height;
 }
 
 - (void)initializeFetchedResultsController
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CDFriendsMeet"];
-    
+    NSDate *now = [NSDate date];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"startTime >= %@", now];
     NSString *sortKey = _orderByPostTime ? @"postTime" : @"startTime";
     BOOL sortAscending = _orderByPostTime ? NO : YES;
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:sortKey ascending:sortAscending];
-    
+    [request setPredicate:predicate];
     [request setSortDescriptors:@[sort]];
     
     //NSManagedObjectContext *moc = …; //Retrieve the main queue NSManagedObjectContext
@@ -620,6 +496,7 @@
                                 for(id<FIRListenerRegistration> listener in _listenerArray){
                                     [listener remove];
                                 }
+                                [_listenerArray removeAllObjects];
                                 _orderByPostTime = !_orderByPostTime;
                                 _lastMeetReached = NO;
                                 _meetsLoadingDone = NO;

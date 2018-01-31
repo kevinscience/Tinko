@@ -736,6 +736,53 @@
             </objects>
             <point key="canvasLocation" x="2767" y="-587"/>
         </scene>
+        <!--Tinko TableVC-->
+        <scene sceneID="E5r-hp-wD1">
+            <objects>
+                <tableViewController storyboardIdentifier="TinkoTableVCID" id="fct-f2-gHG" customClass="TinkoTableVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="PVx-8V-8Te">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="y6M-iN-zTY">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="y6M-iN-zTY" id="OoM-yp-DGg">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HGP-xn-2jS">
+                                            <rect key="frame" x="329" y="6" width="30" height="30"/>
+                                            <state key="normal" title="Sort"/>
+                                        </button>
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C70-UA-cmm">
+                                            <rect key="frame" x="16" y="6" width="297" height="30"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="HGP-xn-2jS" firstAttribute="centerY" secondItem="OoM-yp-DGg" secondAttribute="centerY" id="B9J-Y8-MMI"/>
+                                        <constraint firstItem="HGP-xn-2jS" firstAttribute="leading" secondItem="C70-UA-cmm" secondAttribute="trailing" constant="16" id="LS0-bE-YcR"/>
+                                        <constraint firstItem="C70-UA-cmm" firstAttribute="leading" secondItem="OoM-yp-DGg" secondAttribute="leading" constant="16" id="RcJ-Hs-usy"/>
+                                        <constraint firstAttribute="trailing" secondItem="HGP-xn-2jS" secondAttribute="trailing" constant="16" id="ZSr-iM-1Or"/>
+                                        <constraint firstItem="C70-UA-cmm" firstAttribute="centerY" secondItem="OoM-yp-DGg" secondAttribute="centerY" id="zlA-6N-ip1"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="fct-f2-gHG" id="1RF-vy-k2I"/>
+                            <outlet property="delegate" destination="fct-f2-gHG" id="rdN-V9-xEX"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="U2F-dI-sqx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3527" y="-589"/>
+        </scene>
         <!--Main Tab BarVC-->
         <scene sceneID="HcT-Fo-yNc">
             <objects>
