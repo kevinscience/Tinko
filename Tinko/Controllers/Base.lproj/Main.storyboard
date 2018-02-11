@@ -752,23 +752,25 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HGP-xn-2jS">
-                                            <rect key="frame" x="329" y="6" width="30" height="30"/>
-                                            <state key="normal" title="Sort"/>
-                                        </button>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C70-UA-cmm">
-                                            <rect key="frame" x="16" y="6" width="297" height="30"/>
+                                            <rect key="frame" x="16" y="6" width="343" height="30"/>
                                             <nil key="textColor"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <textInputTraits key="textInputTraits"/>
                                         </textField>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ceo-pf-cJf">
+                                            <rect key="frame" x="305" y="6" width="30" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <state key="normal" title="Sort"/>
+                                            <connections>
+                                                <action selector="sortButtonPressed:" destination="fct-f2-gHG" eventType="touchUpInside" id="e9n-4D-UUQ"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="HGP-xn-2jS" firstAttribute="centerY" secondItem="OoM-yp-DGg" secondAttribute="centerY" id="B9J-Y8-MMI"/>
-                                        <constraint firstItem="HGP-xn-2jS" firstAttribute="leading" secondItem="C70-UA-cmm" secondAttribute="trailing" constant="16" id="LS0-bE-YcR"/>
-                                        <constraint firstItem="C70-UA-cmm" firstAttribute="leading" secondItem="OoM-yp-DGg" secondAttribute="leading" constant="16" id="RcJ-Hs-usy"/>
-                                        <constraint firstAttribute="trailing" secondItem="HGP-xn-2jS" secondAttribute="trailing" constant="16" id="ZSr-iM-1Or"/>
-                                        <constraint firstItem="C70-UA-cmm" firstAttribute="centerY" secondItem="OoM-yp-DGg" secondAttribute="centerY" id="zlA-6N-ip1"/>
+                                        <constraint firstItem="C70-UA-cmm" firstAttribute="leading" secondItem="OoM-yp-DGg" secondAttribute="leadingMargin" id="9R4-0l-iQ0"/>
+                                        <constraint firstItem="C70-UA-cmm" firstAttribute="centerY" secondItem="OoM-yp-DGg" secondAttribute="centerY" id="DXO-Du-5oZ"/>
+                                        <constraint firstAttribute="trailing" secondItem="C70-UA-cmm" secondAttribute="trailing" constant="16" id="cyv-kM-MeG"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -1025,6 +1027,18 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5h7-18-zMQ">
+                                                    <rect key="frame" x="242" y="23" width="117" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" red="0.2549889991" green="0.67986505679999998" blue="0.1717327957" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
+                                                    <state key="normal">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="participateButtonPressed:" destination="tQl-Cf-Rnh" eventType="touchUpInside" id="cDT-5z-Xma"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="tbl-pi-0wT" firstAttribute="leading" secondItem="UMn-P7-Ubl" secondAttribute="trailing" constant="8" id="47k-Q2-Hwk"/>
@@ -1079,6 +1093,7 @@
                         <outlet property="descriptionLabel" destination="fPK-7E-nLm" id="FwX-dE-oCR"/>
                         <outlet property="durationLabel" destination="NCi-If-jq1" id="x2j-pt-bej"/>
                         <outlet property="maxNoLabel" destination="tbl-pi-0wT" id="Y7e-z2-Y6w"/>
+                        <outlet property="participateButton" destination="5h7-18-zMQ" id="HOa-fY-xgF"/>
                         <outlet property="placeAddressLabel" destination="B34-rA-JGz" id="qAn-mQ-kmw"/>
                         <outlet property="placeNameLabel" destination="tYv-Sy-OAY" id="dcx-E0-6Y4"/>
                         <outlet property="profileImage" destination="i9S-uS-9oN" id="4YW-wc-sMD"/>

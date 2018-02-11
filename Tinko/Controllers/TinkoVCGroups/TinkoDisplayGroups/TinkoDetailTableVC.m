@@ -12,12 +12,12 @@
 #import "WebClient.h"
 #import "User.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "MBProgressHUD.h"
 @import Firebase;
 
 @interface TinkoDetailTableVC ()
 @property Meet *meet;
 @property SharedMeet *sharedMeet;
-@property (nonatomic, strong) WebClient *client;
 @property NSString *facebookId;
 @property BOOL participating;
 @property User *creatorUser;
@@ -32,6 +32,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *maxNoLabel;
 @property (weak, nonatomic) IBOutlet UILabel *allowPeopleNearbyLabel;
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
+@property (weak, nonatomic) IBOutlet UIButton *participateButton;
 @end
 
 @implementation TinkoDetailTableVC
@@ -42,6 +43,7 @@
     _db = FIRFirestore.firestore;
     _sharedMeet = [SharedMeet sharedMeet];
     NSString *meetId = [_sharedMeet meetId];
+    _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
     
     FIRDocumentReference *meetRef = [[_db collectionWithPath:@"Meets"] documentWithPath:meetId];
     [meetRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
@@ -50,9 +52,10 @@
             NSDictionary *dic = snapshot.data;
             _meet = [[Meet alloc] initWithDictionary:dic];
             NSLog(@"TinkoDetail: %@", _meet.title);
-            _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+            
             NSArray *participatedUsersList = _meet.participatedUsersList;
             _participating = [participatedUsersList containsObject:_facebookId];
+            [_participateButton setTitle:_participating ? @"Participating" : @"Partcipate" forState:UIControlStateNormal];
             // Do any additional setup after loading the view from its nib.
             
             _titleLabel.text = _meet.title;
@@ -96,6 +99,36 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+- (IBAction)participateButtonPressed:(id)sender {
+    NSLog(@"participateButtonClicked");
+    if(_participating){
+        return;
+    }
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    NSLog(@"TinkoDetailTable: participateButtonPressed: participating is NO");
+    NSString *meetId = [_sharedMeet meetId];
+    NSString *code = @"participateMeet";
+    NSDictionary *dataDic = @{
+                             @"userFacebookId" : _facebookId,
+                             @"meetId" : meetId
+                             };
+    [WebClient postMethodWithCode:code withData:dataDic withCompletion:^{
+        _participating = !_participating;
+        [sender setTitle:@"Participating" forState:UIControlStateNormal];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    } withError:^(NSString *error) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self presentAlertControllerWithError:error];
+    }];
+    
+}
+
+-(void)presentAlertControllerWithError:(NSString*)error{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error" message:error preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

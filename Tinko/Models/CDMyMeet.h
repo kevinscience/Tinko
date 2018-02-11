@@ -7,7 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
-#import "CDUser.h"
+#import "User.h"
 #import "Meet.h"
 
 @interface CDMyMeet : NSManagedObject
@@ -22,8 +22,8 @@
 @property (nonatomic, strong) NSString *duration;
 @property (nonatomic, strong) NSNumber *maxNo;
 @property (nonatomic, strong) NSString *discription;
+@property (nonatomic, strong) NSString *creatorUsername;
+@property (nonatomic, strong) NSString *creatorPhotoURL;
 
-@property (nonatomic, strong) CDUser *creatorUser;
-
-+(void)createOrUpdateMeetWithMeet:(Meet*)meet withMeetId:(NSString*)meetId withCDUser:(CDUser*)cdUser withContext:(NSManagedObjectContext*)context;
++(void)createOrUpdateMeetWithMeet:(Meet*)meet withMeetId:(NSString*)meetId withUser:(User*)user withContext:(NSManagedObjectContext*)context;
 @end

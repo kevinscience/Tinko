@@ -43,8 +43,8 @@
     self.time.text=[NSString stringWithFormat:@"%@",[formatter stringFromDate: startTime]];
     _placeName.text = cdMeet.placeName;
     
-    [self.creatorName setText:cdMeet.creatorUser.username];
-    [self.profileImage sd_setImageWithURL:[NSURL URLWithString:cdMeet.creatorUser.photoURL]
+    [self.creatorName setText:cdMeet.creatorUsername];
+    [self.profileImage sd_setImageWithURL:[NSURL URLWithString:cdMeet.creatorPhotoURL]
                          placeholderImage:[UIImage imageNamed:@"avatar-placeholder.png"]
                                   options:SDWebImageRefreshCached];
 }

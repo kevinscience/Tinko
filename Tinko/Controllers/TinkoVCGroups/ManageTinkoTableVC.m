@@ -90,10 +90,9 @@
                             //NSLog(@"Document data: %@", snapshot.data);
                             user = [[User alloc] initWithDictionary:snapshot.data];
                             [_context performBlock:^{
-                                CDUser *cdUser = [CDUser createOrUpdateCDUserWithUser:user withContext:_context];
-                                [CDMyMeet createOrUpdateMeetWithMeet:meet withMeetId:diff.document.documentID withCDUser:cdUser withContext:cdUser.managedObjectContext];
+                                [CDMyMeet createOrUpdateMeetWithMeet:meet withMeetId:diff.document.documentID withUser:user withContext:_context];
                                 NSError *error = nil;
-                                if ([cdUser.managedObjectContext hasChanges] && ![cdUser.managedObjectContext save:&error]) {
+                                if ([_context hasChanges] && ![_context save:&error]) {
                                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                                     abort();
                                 }
@@ -251,10 +250,10 @@
     //NSLog(@"controllerdidchangesection");
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [[self tableView] insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [[self tableView] insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationNone];
             break;
         case NSFetchedResultsChangeDelete:
-            [[self tableView] deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [[self tableView] deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationNone];
             break;
         case NSFetchedResultsChangeMove:
         case NSFetchedResultsChangeUpdate:
@@ -266,17 +265,17 @@
     //NSLog(@"controllerwilldidchangeObject");
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
         case NSFetchedResultsChangeDelete:
-            [[self tableView] deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [[self tableView] deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
         case NSFetchedResultsChangeUpdate:
-            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
         case NSFetchedResultsChangeMove:
-            [[self tableView] deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [[self tableView] deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            [[self tableView] insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationNone];
             break;
     }
     

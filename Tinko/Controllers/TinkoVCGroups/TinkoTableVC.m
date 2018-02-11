@@ -17,10 +17,11 @@
 #import "User.h"
 #import "AppDelegate.h"
 #import "CDFriendsMeet.h"
+#import "MBProgressHUD.h"
 @import Firebase;
 
 @interface TinkoTableVC ()
-@property UIRefreshControl *refresher;
+//@property UIRefreshControl *refresher;
 @property FIRFirestore *db;
 @property NSString *facebookId;
 @property (strong, nonatomic) LGPlusButtonsView *plusButtonsViewMain;
@@ -29,7 +30,6 @@
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property(weak, nonatomic)NSPersistentContainer *container;
 @property(weak, nonatomic)NSManagedObjectContext *context;
-@property NSMutableArray<id<FIRListenerRegistration>> *listenerArray;
 @property NSInteger insets;
 @property BOOL firstLoad;
 @end
@@ -47,12 +47,11 @@
     _context = _container.viewContext;
     [_context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
     
-    _listenerArray = [[NSMutableArray alloc] init];
 
-    _refresher = [[UIRefreshControl alloc] init];
-    _refresher.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh"];
-    [self.tableView addSubview:_refresher];
-    [_refresher addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
+//    _refresher = [[UIRefreshControl alloc] init];
+//    _refresher.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh"];
+//    [self.tableView addSubview:_refresher];
+//    [_refresher addTarget:self action:@selector(pullToRefresh) forControlEvents:UIControlEventValueChanged];
     _db = FIRFirestore.firestore;
     _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
 
@@ -170,7 +169,7 @@
             }
             
         }];
-        [_listenerArray addObject:listener];
+        
     });
     
 }
@@ -209,14 +208,29 @@
 
 
 
-- (void) pullToRefresh {
+//- (void) pullToRefresh {
+//    [self initializeFetchedResultsController];
+//    [self.tableView reloadData];
+//    [_refresher endRefreshing];
+//    //_lastMeetReached = NO;
+//    //[self fetchMeetsFromFirestore];
+//
+//
+//}
+- (IBAction)sortButtonPressed:(id)sender {
+    NSLog(@"TinkoTable: sortButtonPressed");
+    _orderByPostTime = !_orderByPostTime;
     [self initializeFetchedResultsController];
     [self.tableView reloadData];
-    [_refresher endRefreshing];
-    //_lastMeetReached = NO;
-    //[self fetchMeetsFromFirestore];
-
-
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    // Configure for text only and offset down
+    hud.mode = MBProgressHUDModeText;
+    hud.label.text = _orderByPostTime ? @"Sort by Post Time" : @"Sort by Start Time";
+    hud.margin = 10.f;
+    hud.yOffset = 150.f;
+    hud.removeFromSuperViewOnHide = YES;
+    [hud hideAnimated:YES afterDelay:1];
 }
 
 - (void)didReceiveMemoryWarning {

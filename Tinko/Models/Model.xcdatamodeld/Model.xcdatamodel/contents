@@ -23,6 +23,8 @@
     <entity name="CDMyMeet" representedClassName="CDMyMeet" syncable="YES" codeGenerationType="category">
         <attribute name="allowPeopleNearby" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="creatorFacebookId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="creatorPhotoURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="creatorUsername" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="discription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="duration" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="maxNo" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -32,7 +34,6 @@
         <attribute name="postTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="creatorUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="myInvolvingMeets" inverseEntity="CDUser" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="meetId"/>
@@ -47,7 +48,6 @@
         <attribute name="photoURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="myInvolvingMeets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDMyMeet" inverseName="creatorUser" inverseEntity="CDMyMeet" syncable="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="facebookId"/>
@@ -69,9 +69,9 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="CDUser" positionX="-81" positionY="-117" width="128" height="163"/>
-        <element name="NewFriendsRequest" positionX="-342" positionY="-18" width="128" height="148"/>
-        <element name="CDMyMeet" positionX="-101" positionY="135" width="128" height="223"/>
         <element name="CDFriendsMeet" positionX="115" positionY="-79" width="128" height="238"/>
+        <element name="CDMyMeet" positionX="243" positionY="-81" width="128" height="238"/>
+        <element name="CDUser" positionX="-81" positionY="-117" width="128" height="148"/>
+        <element name="NewFriendsRequest" positionX="-342" positionY="-18" width="128" height="148"/>
     </elements>
 </model>
