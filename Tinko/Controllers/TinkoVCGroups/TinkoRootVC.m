@@ -8,7 +8,6 @@
 
 #import "TinkoRootVC.h"
 #import "TinkoTableVC.h"
-#import "NearbyTinkoTableVC.h"
 #import "ManageTinkoTableVC.h"
 #import "TempVC.h"
 #import "NearbyTinkoMapsVC.h"

@@ -70,7 +70,21 @@
 }
 
 - (void) loginButtonDidLogOut:(FBSDKLoginButton *)loginButton{
-    NSLog(@"facebook logout button test");
+    NSLog(@"TempVC: loginButtonDidLogOut");
+    //facebook log out
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    [login logOut];
+    [FBSDKAccessToken setCurrentAccessToken:nil];
+    [FBSDKProfile setCurrentProfile:nil];
+    
+    NSHTTPCookieStorage* cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray* facebookCookies = [cookies cookiesForURL:
+                                [NSURL URLWithString:@"http://login.facebook.com"]];
+    for (NSHTTPCookie* cookie in facebookCookies) {
+        [cookies deleteCookie:cookie];
+    }
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     NSError *signOutError;
     BOOL status = [[FIRAuth auth] signOut:&signOutError];
     if (!status) {
@@ -95,9 +109,12 @@
     }
     
     request = [[NSFetchRequest alloc] initWithEntityName:@"CDMyMeet"];
-    delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-    [_context executeRequest:delete error:&deleteError];
-    
+//    delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+//    [_context executeRequest:delete error:&deleteError];
+    NSArray *array3 = [_context executeFetchRequest:request error:&error];
+    for(NSManagedObject *managedObject in array3){
+        [_context deleteObject:managedObject];
+    }
     request = [[NSFetchRequest alloc] initWithEntityName:@"CDFriendsMeet"];
     //delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
     

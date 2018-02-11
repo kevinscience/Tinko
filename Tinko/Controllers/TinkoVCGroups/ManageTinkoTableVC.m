@@ -26,6 +26,7 @@
 @property(weak, nonatomic)NSPersistentContainer *container;
 @property(weak, nonatomic)NSManagedObjectContext *context;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+@property BOOL firstLoad;
 @end
 
 @implementation ManageTinkoTableVC
@@ -44,24 +45,42 @@
     _container = appDelegate.persistentContainer;
     _context = _container.viewContext;
     [_context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-    
+    _firstLoad = YES;
     [self initializeFetchedResultsController];
     [self addInvolvedMeetsSnapshotListener];
+    
     
 }
 
 -(void)addInvolvedMeetsSnapshotListener{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.startTime", _facebookId];
+        NSString *queryString = [NSString stringWithFormat:@"participatedUsersList.%@.status", _facebookId];
         FIRCollectionReference *meetsRef = [_db collectionWithPath:@"Meets"];
-        FIRQuery *query = [meetsRef queryOrderedByField:queryString];
+        FIRQuery *query = [meetsRef queryWhereField:queryString isEqualTo:@YES];
         [query addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
             if (snapshot == nil) {
                 NSLog(@"Error fetching documents: %@", error);
                 return;
             }
+            
+            NSMutableArray *meetsIdArray = [[NSMutableArray alloc] init];
+            NSInteger index = 0;
+            NSInteger diffChangesCountTypeAdded = 0;
+            for(FIRDocumentChange *diff in snapshot.documentChanges) {
+                if (diff.type == FIRDocumentChangeTypeAdded) {
+                    diffChangesCountTypeAdded++;
+                }
+            }
+            if(diffChangesCountTypeAdded==0){
+                [self concludeListenerWithMeetIdArray:meetsIdArray];
+            }
+            
             for (FIRDocumentChange *diff in snapshot.documentChanges) {
                 if (diff.type == FIRDocumentChangeTypeAdded){
+                    
+                    index++;
+                    [meetsIdArray addObject:diff.document.documentID];
+                    
                     Meet *meet = [[Meet alloc] initWithDictionary:diff.document.data];
                     NSString *creatorFacebookId = meet.creatorFacebookId;
                     FIRDocumentReference *userRef = [[_db collectionWithPath:@"Users"] documentWithPath:creatorFacebookId];
@@ -78,6 +97,10 @@
                                     NSLog(@"Unresolved error %@, %@", error, error.userInfo);
                                     abort();
                                 }
+                                if(index == diffChangesCountTypeAdded){
+                                    [self concludeListenerWithMeetIdArray:meetsIdArray];
+                                }
+                                
                             }];
                             
                         } else {
@@ -92,6 +115,15 @@
                 if (diff.type == FIRDocumentChangeTypeRemoved) {
                     //                NSLog(@"Removed meet: %@", diff.document.data);
                     //                NSString *documentId = diff.document.documentID;
+                    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"CDMyMeet"];
+                    [request setPredicate:[NSPredicate predicateWithFormat:@"meetId == %@", diff.document.documentID]];
+                    NSArray *array = [_context executeFetchRequest:request error:&error];
+                    [_context deleteObject:array.firstObject];
+                    if ([_context hasChanges] && ![_context save:&error]) {
+                        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                        abort();
+                    }
+                    
                 }
             }
             
@@ -99,6 +131,28 @@
             //
         }];
     });
+}
+
+-(void) concludeListenerWithMeetIdArray:(NSMutableArray*)meetsIdArray{
+    if (_firstLoad){
+        [_context performBlock:^{
+            //NSLog(@"TinkoTable: addMeetsListener: meetsIdArray.count = %lu", (unsigned long)meetsIdArray.count);
+            NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"CDMyMeet"];
+            [request setPredicate:[NSPredicate predicateWithFormat:@"Not (meetId IN %@)", meetsIdArray]];
+            
+            NSError *error = nil;
+            NSArray *array = [_context executeFetchRequest:request error:&error];
+            for(NSManagedObject *managedObject in array){
+                [_context deleteObject:managedObject];
+            }
+            //NSError *error = nil;
+            if ([_context hasChanges] && ![_context save:&error]) {
+                NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+                abort();
+            }
+        }];
+    }
+    _firstLoad = NO;
 }
 
 - (void)initializeFetchedResultsController

@@ -10,6 +10,7 @@
 #import "TinkoDetailVC.h"
 #import "TinkoDisccusionVC.h"
 #import "TempVC.h"
+#import "TinkoDetailTableVC.h"
 
 @interface TinkoDisplayRootVC ()
 
@@ -45,7 +46,8 @@
 -(NSArray *)childViewControllersForPagerTabStripViewController:(XLPagerTabStripViewController *)pagerTabStripViewController
 {
     // create child view controllers that will be managed by XLPagerTabStripViewController
-    TinkoDetailVC * child_1 = [self.storyboard instantiateViewControllerWithIdentifier:@"TinkoDetailVCID"];
+    //TinkoDetailVC * child_1 = [self.storyboard instantiateViewControllerWithIdentifier:@"TinkoDetailVCID"];
+    TinkoDetailTableVC * child_1 = [self.storyboard instantiateViewControllerWithIdentifier:@"TinkoDetailTableVCID"];
     //TinkoDisccusionVC * child_2 = [self.storyboard instantiateViewControllerWithIdentifier:@"TinkoDiscussionVCID"];
     TinkoDisccusionVC *child_2 = [TinkoDisccusionVC new];
     //MessageViewController *child_2 = [MessageViewController new];

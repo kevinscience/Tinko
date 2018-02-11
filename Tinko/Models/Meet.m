@@ -14,6 +14,7 @@
     self = [super init];
     if (self)
     {
+        //NSLog(@"Meet: dictionary: %@", dictionary);
         self.creatorFacebookId = dictionary[@"creator"];
         self.title = dictionary[@"title"];
         self.startTime = dictionary[@"startTime"];
@@ -26,7 +27,7 @@
         self.participatedUsersList = [dicForParticipatedUsersList allKeys];
         self.duration = dictionary[@"duration"];
         self.maxNo = dictionary[@"maxNo"];
-        self.discription = dictionary[@"discription"];
+        self.discription = dictionary[@"description"];
     }
     
     return self;

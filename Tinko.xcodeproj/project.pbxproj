@@ -17,6 +17,7 @@
 		416481CD2018417100E05D40 /* NewFriendsRequestTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 416481CB2018417100E05D40 /* NewFriendsRequestTVCell.xib */; };
 		416481D9201C20E300E05D40 /* CDMyMeet.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481D8201C20E200E05D40 /* CDMyMeet.m */; };
 		416481DC201D794000E05D40 /* CDFriendsMeet.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481DB201D794000E05D40 /* CDFriendsMeet.m */; };
+		416481E0202A44C600E05D40 /* TinkoDetailTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481DF202A44C600E05D40 /* TinkoDetailTableVC.m */; };
 		419011AD1FE9D2B6001FBF82 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AC1FE9D2B6001FBF82 /* AppDelegate.m */; };
 		419011B01FE9D2B6001FBF82 /* LoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 419011AF1FE9D2B6001FBF82 /* LoginVC.m */; };
 		419011B31FE9D2B6001FBF82 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 419011B11FE9D2B6001FBF82 /* Main.storyboard */; };
@@ -42,8 +43,6 @@
 		41AAD89A1FEEC6D20020532B /* TempVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8991FEEC6D20020532B /* TempVC.m */; };
 		41AAD89E1FEF2DE90020532B /* TinkoRootVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD89D1FEF2DE90020532B /* TinkoRootVC.m */; };
 		41AAD8A11FEF5B1E0020532B /* TinkoTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8A01FEF5B1E0020532B /* TinkoTableVC.m */; };
-		41AAD8A51FEF631C0020532B /* NearbyTinkoTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8A31FEF631C0020532B /* NearbyTinkoTableVC.m */; };
-		41AAD8A61FEF631C0020532B /* NearbyTinkoTableVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 41AAD8A41FEF631C0020532B /* NearbyTinkoTableVC.xib */; };
 		41AAD8AA1FF02F3A0020532B /* TinkoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8A81FF02F3A0020532B /* TinkoCell.m */; };
 		41AAD8AB1FF02F3A0020532B /* TinkoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 41AAD8A91FF02F3A0020532B /* TinkoCell.xib */; };
 		41AAD8B21FF046A10020532B /* ManageTinkoTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 41AAD8B01FF046A10020532B /* ManageTinkoTableVC.m */; };
@@ -104,6 +103,8 @@
 		416481D8201C20E200E05D40 /* CDMyMeet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDMyMeet.m; sourceTree = "<group>"; };
 		416481DA201D794000E05D40 /* CDFriendsMeet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDFriendsMeet.h; sourceTree = "<group>"; };
 		416481DB201D794000E05D40 /* CDFriendsMeet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDFriendsMeet.m; sourceTree = "<group>"; };
+		416481DE202A44C600E05D40 /* TinkoDetailTableVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinkoDetailTableVC.h; sourceTree = "<group>"; };
+		416481DF202A44C600E05D40 /* TinkoDetailTableVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoDetailTableVC.m; sourceTree = "<group>"; };
 		419011A81FE9D2B6001FBF82 /* Tinko.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinko.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		419011AB1FE9D2B6001FBF82 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		419011AC1FE9D2B6001FBF82 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -148,9 +149,6 @@
 		41AAD89D1FEF2DE90020532B /* TinkoRootVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoRootVC.m; sourceTree = "<group>"; };
 		41AAD89F1FEF5B1E0020532B /* TinkoTableVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinkoTableVC.h; sourceTree = "<group>"; };
 		41AAD8A01FEF5B1E0020532B /* TinkoTableVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoTableVC.m; sourceTree = "<group>"; };
-		41AAD8A21FEF631C0020532B /* NearbyTinkoTableVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyTinkoTableVC.h; sourceTree = "<group>"; };
-		41AAD8A31FEF631C0020532B /* NearbyTinkoTableVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyTinkoTableVC.m; sourceTree = "<group>"; };
-		41AAD8A41FEF631C0020532B /* NearbyTinkoTableVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NearbyTinkoTableVC.xib; sourceTree = "<group>"; };
 		41AAD8A71FF02F3A0020532B /* TinkoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TinkoCell.h; sourceTree = "<group>"; };
 		41AAD8A81FF02F3A0020532B /* TinkoCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TinkoCell.m; sourceTree = "<group>"; };
 		41AAD8A91FF02F3A0020532B /* TinkoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TinkoCell.xib; sourceTree = "<group>"; };
@@ -410,9 +408,6 @@
 				41AAD89D1FEF2DE90020532B /* TinkoRootVC.m */,
 				41AAD89F1FEF5B1E0020532B /* TinkoTableVC.h */,
 				41AAD8A01FEF5B1E0020532B /* TinkoTableVC.m */,
-				41AAD8A21FEF631C0020532B /* NearbyTinkoTableVC.h */,
-				41AAD8A31FEF631C0020532B /* NearbyTinkoTableVC.m */,
-				41AAD8A41FEF631C0020532B /* NearbyTinkoTableVC.xib */,
 				41AAD8AF1FF046A10020532B /* ManageTinkoTableVC.h */,
 				41AAD8B01FF046A10020532B /* ManageTinkoTableVC.m */,
 				411F7A5E1FFED58C00B8AD0C /* NearbyTinkoMapsVC.h */,
@@ -469,6 +464,8 @@
 				41AAD8DB1FF69DE90020532B /* TinkoDetailVC.m */,
 				41AAD8DF1FF7274A0020532B /* TinkoDisccusionVC.h */,
 				41AAD8E01FF7274A0020532B /* TinkoDisccusionVC.m */,
+				416481DE202A44C600E05D40 /* TinkoDetailTableVC.h */,
+				416481DF202A44C600E05D40 /* TinkoDetailTableVC.m */,
 			);
 			path = TinkoDisplayGroups;
 			sourceTree = "<group>";
@@ -610,7 +607,6 @@
 				419011B51FE9D2B6001FBF82 /* Assets.xcassets in Resources */,
 				41AAD8941FEDCBC40020532B /* InvitationRangeOptionTVC.xib in Resources */,
 				419011B31FE9D2B6001FBF82 /* Main.storyboard in Resources */,
-				41AAD8A61FEF631C0020532B /* NearbyTinkoTableVC.xib in Resources */,
 				41E1F66E2016534600F60EDD /* GoogleService-Info.plist in Resources */,
 				41AAD87B1FEB72850020532B /* FriendsListTableViewCell.xib in Resources */,
 			);
@@ -804,6 +800,7 @@
 				41AAD8971FEEC6950020532B /* ProfileUpdateTableVC.m in Sources */,
 				419011EC1FEA22B9001FBF82 /* MeVC.m in Sources */,
 				416481DC201D794000E05D40 /* CDFriendsMeet.m in Sources */,
+				416481E0202A44C600E05D40 /* TinkoDetailTableVC.m in Sources */,
 				41AAD8F01FF88A7D0020532B /* Message.m in Sources */,
 				41AAD8751FEB59730020532B /* ProfileTableViewCell.m in Sources */,
 				41AAD89A1FEEC6D20020532B /* TempVC.m in Sources */,
@@ -812,7 +809,6 @@
 				41AAD87A1FEB72840020532B /* FriendsListTableViewCell.m in Sources */,
 				411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */,
 				411A886D200E9132002A5FA0 /* Model.xcdatamodeld in Sources */,
-				41AAD8A51FEF631C0020532B /* NearbyTinkoTableVC.m in Sources */,
 				41BF7AFF20144B2400360778 /* SharedMeet.m in Sources */,
 				416481C52017CAC400E05D40 /* NewFriendsRequestFolder.m in Sources */,
 				416481D9201C20E300E05D40 /* CDMyMeet.m in Sources */,
