@@ -24,6 +24,7 @@
 @property NSMutableArray *selectedFriendsArray;
 @property BOOL allowPeopleNearby;
 @property BOOL allFriends;
+@property BOOL allowParticipantsInvite;
 @property NSString *facebookId;
 @end
 
@@ -35,7 +36,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self showCurrentDate];
-    [self.dateTimePicker setMinimumDate:[NSDate date]];
     _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
     self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:56/255.0 green:135/255.0 blue:186/255.0 alpha:1.0];
     [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:[UIColor whiteColor],
@@ -45,6 +45,13 @@
 
 - (IBAction)postAction:(id)sender {
     NSString *title = _titleTextField.text;
+    if([title length] == 0) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Title" message:@"Please enter a title" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
+    
     NSString *duration = _durationTextField.text;
     if([duration length] == 0){
         duration = @"1 hour";
@@ -59,7 +66,8 @@
     
     FIRGeoPoint *coordinate = [[FIRGeoPoint alloc] initWithLatitude:_place.coordinate.latitude longitude:_place.coordinate.longitude];
     if(_pickerDate == nil){
-        _pickerDate = [NSDate date];
+        NSDate *nowAdd5Mins = [[NSDate date] dateByAddingTimeInterval:(5*60)];
+        _pickerDate = nowAdd5Mins;
     }
     double now = [[NSDate date] timeIntervalSince1970];
 //    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -87,10 +95,12 @@
                            @"place" : @{
                                        @"name" : _place.name,
                                        @"address" : _place.formattedAddress,
-                                       @"coordinate" : coordinate
+                                       @"coordinate" : coordinate,
+                                       @"placeId" : _place.placeID
                                        },
                            @"allowPeopleNearby" : [NSNumber numberWithBool:_allowPeopleNearby],
                            @"allFriends" : [NSNumber numberWithBool:_allFriends],
+                           @"allowParticipantsInvite" : [NSNumber numberWithBool:_allowParticipantsInvite],
                            @"selectedFriendsList" : selectedFriendsDictionary,
                            @"maxNo" : maxNo,
                            @"description" : description,
@@ -116,6 +126,8 @@
 }
 
 - (void)showStatusPickerCell {
+    NSDate *nowAdd5Mins = [[NSDate date] dateByAddingTimeInterval:(5*60)];
+    [self.dateTimePicker setMinimumDate:nowAdd5Mins];
     self.datePickerVisible = YES;
     [self.tableView beginUpdates];
     [self.tableView endUpdates];
@@ -131,7 +143,7 @@
 - (void)hideStatusPickerCell {
     self.datePickerVisible = NO;
     [self.tableView beginUpdates];
-    [self.tableView endUpdates];
+    
     [UIView animateWithDuration:0.25
                      animations:^{
                          self.dateTimePicker.alpha = 0.0f;
@@ -139,6 +151,7 @@
                      completion:^(BOOL finished){
                          self.dateTimePicker.hidden = YES;
                      }];
+    [self.tableView endUpdates];
 }
 
 
@@ -150,9 +163,10 @@
 }
 
 -(void)showCurrentDate{
+    NSDate *nowAdd5Mins = [[NSDate date] dateByAddingTimeInterval:(5*60)];
     NSDateFormatter *formatter=[[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"MMM dd, YYYY    hh:mm a"];
-    self.timeLabel.text=[NSString stringWithFormat:@"%@",[formatter stringFromDate:[NSDate date]]];
+    self.timeLabel.text=[NSString stringWithFormat:@"%@",[formatter stringFromDate:nowAdd5Mins]];
 }
 
 
@@ -187,6 +201,7 @@
     _selectedFriendsArray = friendListSelectTableVC.selectedFriendsArray;
     _allowPeopleNearby = friendListSelectTableVC.allowPeopleNearby;
     _allFriends = friendListSelectTableVC.allFriends;
+    _allowParticipantsInvite = friendListSelectTableVC.allowParticipantsInvite;
     //NSLog(@"delegate method: %@",selectedFriendsArray);
     //NSLog(allowPeopleNearby ? @"allowPeopleNearby YES" : @"allowPeopleNearby NO");
 }

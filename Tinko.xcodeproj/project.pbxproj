@@ -11,6 +11,7 @@
 		411A886A20037901002A5FA0 /* NSDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 411A886920037901002A5FA0 /* NSDictionary.m */; };
 		411A886D200E9132002A5FA0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 411A886B200E9130002A5FA0 /* Model.xcdatamodeld */; };
 		411F7A601FFED58C00B8AD0C /* NearbyTinkoMapsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */; };
+		414DCAC82031566200676831 /* UserCVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 414DCAC62031566200676831 /* UserCVCell.m */; };
 		416481C22017083500E05D40 /* NewFriendsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481C12017083500E05D40 /* NewFriendsRequest.m */; };
 		416481C52017CAC400E05D40 /* NewFriendsRequestFolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481C42017CAC400E05D40 /* NewFriendsRequestFolder.m */; };
 		416481CC2018417100E05D40 /* NewFriendsRequestTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 416481CA2018417100E05D40 /* NewFriendsRequestTVCell.m */; };
@@ -92,6 +93,8 @@
 		411A886C200E9130002A5FA0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		411F7A5E1FFED58C00B8AD0C /* NearbyTinkoMapsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NearbyTinkoMapsVC.h; sourceTree = "<group>"; };
 		411F7A5F1FFED58C00B8AD0C /* NearbyTinkoMapsVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NearbyTinkoMapsVC.m; sourceTree = "<group>"; };
+		414DCAC52031566200676831 /* UserCVCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserCVCell.h; sourceTree = "<group>"; };
+		414DCAC62031566200676831 /* UserCVCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserCVCell.m; sourceTree = "<group>"; };
 		416481C02017083500E05D40 /* NewFriendsRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewFriendsRequest.h; sourceTree = "<group>"; };
 		416481C12017083500E05D40 /* NewFriendsRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NewFriendsRequest.m; sourceTree = "<group>"; };
 		416481C32017CAC400E05D40 /* NewFriendsRequestFolder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NewFriendsRequestFolder.h; sourceTree = "<group>"; };
@@ -369,6 +372,8 @@
 				416481C92018417100E05D40 /* NewFriendsRequestTVCell.h */,
 				416481CA2018417100E05D40 /* NewFriendsRequestTVCell.m */,
 				416481CB2018417100E05D40 /* NewFriendsRequestTVCell.xib */,
+				414DCAC52031566200676831 /* UserCVCell.h */,
+				414DCAC62031566200676831 /* UserCVCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -811,6 +816,7 @@
 				411A886D200E9132002A5FA0 /* Model.xcdatamodeld in Sources */,
 				41BF7AFF20144B2400360778 /* SharedMeet.m in Sources */,
 				416481C52017CAC400E05D40 /* NewFriendsRequestFolder.m in Sources */,
+				414DCAC82031566200676831 /* UserCVCell.m in Sources */,
 				416481D9201C20E300E05D40 /* CDMyMeet.m in Sources */,
 				41AAD8CE1FF1C5750020532B /* Meet.m in Sources */,
 				41AAD8EC1FF889F20020532B /* MessageTextView.m in Sources */,

@@ -22,7 +22,10 @@
         self.placeName = dictionary[@"place"][@"name"];
         self.placeAddress = dictionary[@"place"][@"address"];
         self.placeCoordinate = dictionary[@"place"][@"coordinate"];
+        self.placeId = dictionary[@"place"][@"placeId"];
         self.allowPeopleNearby = dictionary[@"allowPeopleNearby"];
+        self.allFriends = dictionary[@"allFriends"];
+        self.allowParticipantsInvite = dictionary[@"allowParticipantsInvite"];
         NSDictionary *dicForParticipatedUsersList = dictionary[@"participatedUsersList"];
         self.participatedUsersList = [dicForParticipatedUsersList allKeys];
         self.duration = dictionary[@"duration"];

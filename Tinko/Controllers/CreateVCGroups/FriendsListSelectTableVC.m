@@ -23,12 +23,14 @@
 @synthesize selectedFriendsArray;
 @synthesize allowPeopleNearby;
 @synthesize allFriends;
+@synthesize allowParticipantsInvite;
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     allowPeopleNearby = NO;
     allFriends = YES;
+    allowParticipantsInvite = NO;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -70,7 +72,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if(section==0){
-        return 2;
+        return 3;
     } else{
         return _friendsListArray.count;
     }
@@ -95,9 +97,15 @@
                           };
             //detect all friends option changed
             [cell.optionSwitch addTarget:self action:@selector(allFriendsSwitchStateChanged:) forControlEvents:UIControlEventValueChanged | UIControlEventTouchDragInside];
-        } else {
+        } else if (indexPath.row == 1) {
             optionDic = @{
                           @"optionName" : @"Allow People Nearby",
+                          @"option" : [NSNumber numberWithBool:NO]
+                          };
+            [cell.optionSwitch addTarget:self action:@selector(allowPeopleNearbyStateChanged:) forControlEvents:UIControlEventValueChanged | UIControlEventTouchDragInside];
+        } else {
+            optionDic = @{
+                          @"optionName" : @"Allow Participants Invite Friends",
                           @"option" : [NSNumber numberWithBool:NO]
                           };
             [cell.optionSwitch addTarget:self action:@selector(allowPeopleNearbyStateChanged:) forControlEvents:UIControlEventValueChanged | UIControlEventTouchDragInside];
@@ -140,6 +148,12 @@
     BOOL state = [(UISwitch *)sender isOn];
     //NSLog(state ? @"switch state YES" : @"Switch state NO");
     allowPeopleNearby = state;
+}
+
+-(void)allowParticipantsInviteStateChanged:(id)sender{
+    BOOL state = [(UISwitch *)sender isOn];
+    //NSLog(state ? @"switch state YES" : @"Switch state NO");
+    allowParticipantsInvite = state;
 }
 
 

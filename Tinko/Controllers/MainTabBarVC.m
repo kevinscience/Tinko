@@ -30,6 +30,7 @@
     // Do any additional setup after loading the view.
     self.delegate = self;
     _facebookId = [[NSUserDefaults standardUserDefaults] stringForKey:@"facebookId"];
+    NSLog(@"MainTabBar: viewDidLoad: facebookId: %@, count: %lu", _facebookId, (unsigned long)[_facebookId length]);
     _db = FIRFirestore.firestore;
     [_db collectionWithPath:@"force-initialization"]; 
     

@@ -17,7 +17,10 @@
 @property (nonatomic, strong) NSString *placeName;
 @property (nonatomic, strong) NSString *placeAddress;
 @property (nonatomic, strong) FIRGeoPoint *placeCoordinate;
+@property (nonatomic, strong) NSString *placeId;
 @property (nonatomic) BOOL allowPeopleNearby;
+@property (nonatomic) BOOL allFriends;
+@property (nonatomic) BOOL allowParticipantsInvite;
 @property (nonatomic, strong) NSArray *participatedUsersList;
 @property (nonatomic, strong) NSString *duration;
 @property (nonatomic, strong) NSNumber *maxNo;
